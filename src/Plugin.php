@@ -107,6 +107,10 @@ class Plugin extends Container {
 		$gateways = new Gateway\Register();
 		$gateways->setup();
 
+		// WooCommerce product.
+		$wc_product = new WooCommerce\Product();
+		$wc_product->setup();
+
 		add_action( 'enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_admin' ) );
 	}
