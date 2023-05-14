@@ -74,4 +74,21 @@ class File {
 
 		return plugins_url( $path, $this->file );
 	}
+
+	/**
+	 * Returns a full path for the asset (static resource CSS/JS) file.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $file_name Asset file name (filename).
+	 *
+	 * @return string
+	 */
+	public function asset_path( string $file_name ): string {
+
+		$min       = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : trailingslashit( 'minified' );
+		$directory = pathinfo( $file_name, PATHINFO_EXTENSION );
+
+		return woo_paddle_gateway()->service( 'file' )->plugin_url( "assets/{$directory}/{$min}{$file_name}" );
+	}
 }
