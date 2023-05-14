@@ -48,8 +48,38 @@ class Plugin extends Container {
 		// Register the file service.
 		$this['file'] = fn() => new File( $file );
 
+		// Register services early.
+		$this->register_services();
+
 		// Load the plugin.
 		$this->load();
+	}
+
+	/**
+	 * Register services.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	private function register_services(): void {
+
+		$provider = new PluginServiceProvider();
+		$provider->register( $this );
+	}
+
+	/**
+	 * Get a service by given key.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key The service key.
+	 *
+	 * @return mixed
+	 */
+	public function service( string $key ) {
+
+		return $this[ $key ];
 	}
 
 	/**
@@ -73,6 +103,7 @@ class Plugin extends Container {
 	 */
 	private function load(): void {
 
-		$container = $this;
+		add_action( 'enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_admin' ) );
 	}
 }
