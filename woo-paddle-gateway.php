@@ -39,4 +39,55 @@
  * WC tested up to:      7.7
  */
 
-namespace Woo_Paddle_Gateway;
+if ( ! defined( 'ABSPATH' ) ) {
+	header( 'Status: 403 Forbidden' );
+	header( 'HTTP/1.1 403 Forbidden' );
+	exit;
+}
+
+/**
+ * Loads the PSR-4 autoloader implementation.
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+require_once untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/vendor/autoload.php';
+
+/**
+ * Initialize the plugin.
+ *
+ * @since 1.0.0
+ *
+ * @return mixed|\Woo_Paddle_Gateway\Plugin
+ */
+function woo_paddle_gateway() {
+
+	static $instance;
+
+	if ( is_null( $instance ) ) {
+		$version  = get_file_data( __FILE__, array( 'Version' => 'Version' ), false );
+		$instance = new \Woo_Paddle_Gateway\Plugin( $version['Version'] ?? '1.0.0', __FILE__ );
+	}
+
+	return $instance;
+}
+
+/**
+ * Load the plugin after all plugins are loaded.
+ *
+ * @since 1.0.0
+ *
+ * @return void
+ */
+function woo_paddle_gateway_load(): void {
+
+	// Fetch the instance.
+	woo_paddle_gateway();
+}
+
+add_action( 'woocommerce_loaded', 'woo_paddle_gateway_load', 20 );
+
+// Register activation and deactivation hooks.
+register_activation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'deactivate' ) );
