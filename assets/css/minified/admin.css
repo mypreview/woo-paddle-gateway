@@ -1,0 +1,1 @@
+.form-table [name*="_test_"]:not(:focus){border-color:#f0ad4e}.form-table textarea{width:400px!important}.form-table textarea[name*="_vendor_"]{height:100px!important}
