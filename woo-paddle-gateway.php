@@ -39,6 +39,8 @@
  * WC tested up to:      7.7
  */
 
+use Woo_Paddle_Gateway\Plugin;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'Status: 403 Forbidden' );
 	header( 'HTTP/1.1 403 Forbidden' );
@@ -59,7 +61,7 @@ require_once untrailingslashit( plugin_dir_path( __FILE__ ) ) . '/vendor/autoloa
  *
  * @since 1.0.0
  *
- * @return mixed|\Woo_Paddle_Gateway\Plugin
+ * @return mixed|Plugin
  */
 function woo_paddle_gateway() {
 
@@ -67,7 +69,7 @@ function woo_paddle_gateway() {
 
 	if ( is_null( $instance ) ) {
 		$version  = get_file_data( __FILE__, array( 'Version' => 'Version' ), false );
-		$instance = new \Woo_Paddle_Gateway\Plugin( $version['Version'] ?? '1.0.0', __FILE__ );
+		$instance = new Plugin( $version['Version'] ?? '1.0.0', __FILE__ );
 	}
 
 	return $instance;
