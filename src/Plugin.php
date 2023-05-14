@@ -103,6 +103,10 @@ class Plugin extends Container {
 	 */
 	private function load(): void {
 
+		// Register payment gateways.
+		$gateways = new Gateway\Register();
+		$gateways->setup();
+
 		add_action( 'enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_admin' ) );
 	}
