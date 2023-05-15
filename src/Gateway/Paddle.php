@@ -19,6 +19,13 @@ use WC_Payment_Gateway;
 class Paddle extends WC_Payment_Gateway {
 
 	/**
+	 * The gateway ID.
+	 *
+	 * @since 1.0.0
+	 */
+	const ID = 'woo-paddle-gateway';
+
+	/**
 	 * Setup settings class.
 	 *
 	 * @since 1.0.0
@@ -43,7 +50,7 @@ class Paddle extends WC_Payment_Gateway {
 	 */
 	private function assign(): void {
 
-		$this->id                 = 'woo-paddle-gateway';
+		$this->id                 = sanitize_key( self::ID );
 		$this->method_title       = __( 'Paddle', 'woo-paddle-gateway' );
 		$this->method_description = __( 'Paddle payment gateway for WooCommerce', 'woo-paddle-gateway' );
 		$this->title              = $this->get_option( 'title' );
