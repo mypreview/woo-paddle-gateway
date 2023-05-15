@@ -73,6 +73,8 @@ class Product {
 				'label'         => __( 'Product type', 'woo-paddle-gateway' ),
 				'description'   => __( 'Use the dropdown list to select the Paddle product type.', 'woo-paddle-gateway' ),
 				'id'            => '_woo_paddle_gateway[type]',
+				'class'         => 'wc-enhanced-select',
+				'style'         => 'width:50%;',
 				'value'         => wc_clean( $data['type'] ?? 'subscription' ),
 				'desc_tip'      => true,
 				'options'       => array(
@@ -83,28 +85,38 @@ class Product {
 		);
 
 		// Display the "Product ID" field.
-		woocommerce_wp_text_input(
+		woocommerce_wp_select(
 			array(
-				'label'       => __( 'Product ID', 'woo-paddle-gateway' ),
-				'description' => __( 'Enter the "ID" of the Paddle catalog product.', 'woo-paddle-gateway' ),
-				'type'        => 'number',
-				'id'          => '_woo_paddle_gateway[product_id]',
+				'label'         => __( 'Product ID', 'woo-paddle-gateway' ),
+				'description'   => __( 'Enter the "ID" of the Paddle catalog product.', 'woo-paddle-gateway' ),
+				'type'          => 'number',
+				'id'            => '_woo_paddle_gateway[product_id]',
+				'class'         => 'wc-enhanced-select',
+				'style'         => 'width:50%;',
 				'wrapper_class' => 'show_if_is_paddle_catalog',
-				'value'       => wc_clean( $data['product_id'] ?? '' ),
-				'desc_tip'    => true,
+				'value'         => wc_clean( $data['product_id'] ?? '' ),
+				'desc_tip'      => true,
+				'options'       => array(
+					'' => __( 'Select a product', 'woo-paddle-gateway' ),
+				) + woo_paddle_gateway()->service( 'api' )->get_product_options(),
 			)
 		);
 
 		// Display the "Plan ID" field.
-		woocommerce_wp_text_input(
+		woocommerce_wp_select(
 			array(
-				'label'       => __( 'Plan ID', 'woo-paddle-gateway' ),
-				'description' => __( 'Enter the "ID" of the Paddle subscription plan.', 'woo-paddle-gateway' ),
-				'type'        => 'number',
-				'id'          => '_woo_paddle_gateway[plan_id]',
+				'label'         => __( 'Plan ID', 'woo-paddle-gateway' ),
+				'description'   => __( 'Enter the "ID" of the Paddle subscription plan.', 'woo-paddle-gateway' ),
+				'type'          => 'number',
+				'id'            => '_woo_paddle_gateway[plan_id]',
+				'class'         => 'wc-enhanced-select',
+				'style'         => 'width:50%;',
 				'wrapper_class' => 'show_if_is_paddle_subscription',
-				'value'       => wc_clean( $data['plan_id'] ?? '' ),
-				'desc_tip'    => true,
+				'value'         => wc_clean( $data['plan_id'] ?? '' ),
+				'desc_tip'      => true,
+				'options'       => array(
+					'' => __( 'Select a plan', 'woo-paddle-gateway' ),
+				) + woo_paddle_gateway()->service( 'api' )->get_plan_options(),
 			)
 		);
 
@@ -123,7 +135,7 @@ class Product {
 	public function save_settings( object $product ): void {
 
 		$is_enabled = filter_input( INPUT_POST, '_is_paddle_product', FILTER_VALIDATE_BOOLEAN ) ? 'yes' : 'no';
-		$data = wc_string_to_bool( $is_enabled ) ? filter_input( INPUT_POST, '_woo_paddle_gateway', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : [];
+		$data       = wc_string_to_bool( $is_enabled ) ? filter_input( INPUT_POST, '_woo_paddle_gateway', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : array();
 
 		// Save the "Paddle" product type.
 		$product->update_meta_data( '_is_paddle_product', $is_enabled );
