@@ -1,6 +1,6 @@
 <?php
 /**
- * The plugin assets (static resources).
+ * Payment gateway registerer.
  *
  * @author MyPreview (Github: @mahdiyazdani, @gooklani, @mypreview)
  *
