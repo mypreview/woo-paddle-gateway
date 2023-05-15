@@ -80,8 +80,8 @@ class Paddle extends WC_Payment_Gateway {
 			return;
 		}
 
-		wp_enqueue_style( 'woo-paddle-gateway' );
-		wp_enqueue_script( 'woo-paddle-gateway' );
+		wp_enqueue_style( 'woo-paddle-gateway-admin' );
+		wp_enqueue_script( 'woo-paddle-gateway-admin' );
 	}
 
 	/**
