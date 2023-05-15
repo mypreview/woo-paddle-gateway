@@ -34,18 +34,27 @@ abstract class Assets {
 	 */
 	public static function enqueue_admin(): void {
 
+		$version = woo_paddle_gateway()->get_version();
+
 		wp_register_style(
-			'woo-paddle-gateway',
+			'woo-paddle-gateway-admin',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'admin.css' ),
 			array(),
-			woo_paddle_gateway()->get_version(),
+			$version,
 			'screen'
 		);
 		wp_register_script(
-			'woo-paddle-gateway',
+			'woo-paddle-gateway-admin',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'admin.js' ),
 			array( 'jquery' ),
-			woo_paddle_gateway()->get_version(),
+			$version,
+			true
+		);
+		wp_register_script(
+			'woo-paddle-gateway-product',
+			woo_paddle_gateway()->service( 'file' )->asset_path( 'product.js' ),
+			array( 'jquery' ),
+			$version,
 			true
 		);
 	}
