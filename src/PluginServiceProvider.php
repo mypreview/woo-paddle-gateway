@@ -11,7 +11,9 @@
 
 namespace Woo_Paddle_Gateway;
 
+use Woo_Paddle_Gateway\Api\Api;
 use Woo_Paddle_Gateway\Gateway\Paddle;
+use Woo_Paddle_Gateway\Gateway\Manager;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
@@ -30,6 +32,11 @@ class PluginServiceProvider implements ServiceProviderInterface {
 	 */
 	public function register( Container $pimple ): void {
 
-		$pimple['paddle'] = fn() => new Paddle();
+		// Gatewat services.
+		$pimple['paddle']         = fn() => new Paddle();
+		$pimple['paddle_manager'] = fn() => new Manager();
+
+		// Api services.
+		$pimple['api'] = fn() => new Api();
 	}
 }
