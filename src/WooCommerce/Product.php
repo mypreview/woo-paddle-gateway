@@ -61,6 +61,8 @@ class Product {
 	 */
 	public function general_settings(): void {
 
+		wp_enqueue_script( 'woo-paddle-gateway-product' );
+
 		$data = get_post_meta( get_the_ID(), '_woo_paddle_gateway', true );
 
 		echo '<div class="options_group show_if_is_paddle_product">';
@@ -83,11 +85,25 @@ class Product {
 		// Display the "Product ID" field.
 		woocommerce_wp_text_input(
 			array(
-				'label'       => __( 'Product/Plan ID', 'woo-paddle-gateway' ),
-				'description' => __( 'Enter the "ID" of the Paddle catalog product or subscription plan.', 'woo-paddle-gateway' ),
+				'label'       => __( 'Product ID', 'woo-paddle-gateway' ),
+				'description' => __( 'Enter the "ID" of the Paddle catalog product.', 'woo-paddle-gateway' ),
 				'type'        => 'number',
-				'id'          => '_woo_paddle_gateway[id]',
-				'value'       => wc_clean( $data['id'] ?? '' ),
+				'id'          => '_woo_paddle_gateway[product_id]',
+				'wrapper_class' => 'show_if_is_paddle_catalog',
+				'value'       => wc_clean( $data['product_id'] ?? '' ),
+				'desc_tip'    => true,
+			)
+		);
+
+		// Display the "Plan ID" field.
+		woocommerce_wp_text_input(
+			array(
+				'label'       => __( 'Plan ID', 'woo-paddle-gateway' ),
+				'description' => __( 'Enter the "ID" of the Paddle subscription plan.', 'woo-paddle-gateway' ),
+				'type'        => 'number',
+				'id'          => '_woo_paddle_gateway[plan_id]',
+				'wrapper_class' => 'show_if_is_paddle_subscription',
+				'value'       => wc_clean( $data['plan_id'] ?? '' ),
 				'desc_tip'    => true,
 			)
 		);
@@ -106,16 +122,13 @@ class Product {
 	 */
 	public function save_settings( object $product ): void {
 
+		$is_enabled = filter_input( INPUT_POST, '_is_paddle_product', FILTER_VALIDATE_BOOLEAN ) ? 'yes' : 'no';
+		$data = wc_string_to_bool( $is_enabled ) ? filter_input( INPUT_POST, '_woo_paddle_gateway', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ) : [];
+
 		// Save the "Paddle" product type.
-		$product->update_meta_data(
-			'_is_paddle_product',
-			filter_input( INPUT_POST, '_is_paddle_product', FILTER_VALIDATE_BOOLEAN ) ? 'yes' : 'no'
-		);
+		$product->update_meta_data( '_is_paddle_product', $is_enabled );
 
 		// Save the "Paddle" product settings.
-		$product->update_meta_data(
-			'_woo_paddle_gateway',
-			filter_input( INPUT_POST, '_woo_paddle_gateway', FILTER_SANITIZE_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY )
-		);
+		$product->update_meta_data( '_woo_paddle_gateway', $data );
 	}
 }
