@@ -232,6 +232,10 @@ class Paddle extends WC_Payment_Gateway {
 
 		// Update the API connection status.
 		$this->update_option( "{$mode}_vendor_verify", $verify );
+
+		// Flush the cached products.
+		delete_transient( "_woo_paddle_gateway_catalog_products_{$mode}" );
+		delete_transient( "_woo_paddle_gateway_subscription_plans_{$mode}" );
 	}
 
 	/**
