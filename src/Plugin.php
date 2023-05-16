@@ -107,6 +107,10 @@ class Plugin extends Container {
 		$gateways = new Gateway\Register();
 		$gateways->setup();
 
+		// WooCommerce cart.
+		$wc_cart = new WooCommerce\Cart();
+		$wc_cart->setup();
+
 		// WooCommerce product.
 		$wc_product = new WooCommerce\Product();
 		$wc_product->setup();
