@@ -249,7 +249,7 @@ class Paddle extends WC_Payment_Gateway {
 	 *
 	 * @return null|string
 	 */
-	public function verify_connection_status( $data, string $mode, array $credentials ): ?string {
+	private function verify_connection_status( $data, string $mode, array $credentials ): ?string {
 
 		$vendor_id        = $this->get_field_value( "{$mode}_vendor_id", 'text', $data );
 		$vendor_auth_code = $this->get_field_value( "{$mode}_vendor_auth_code", 'text', $data );
