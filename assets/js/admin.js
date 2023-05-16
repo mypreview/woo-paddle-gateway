@@ -23,8 +23,10 @@
 			this.els = {};
 			this.vars.protect = 'woocommerce_woo-paddle-gateway_is_readonly';
 			this.vars.testMode = 'woocommerce_woo-paddle-gateway_sandbox_mode';
+			this.vars.verify = '[for*="_vendor_verify"]';
 			this.els.protect = $( `#${ this.vars.protect }` );
 			this.els.testMode = $( `#${ this.vars.testMode }` );
+			this.els.verify = $( `.forminp ${ this.vars.verify }` );
 		},
 
 		/**
@@ -34,9 +36,40 @@
 		 */
 		init() {
 			this.cache();
+			this.verifyLabel();
 			this.events();
 			this.handleToggleProtect();
 			this.handleToggleTestMode();
+		},
+
+		/**
+		 * Update verify labels.
+		 *
+		 * @since 1.0.0
+		 */
+		verifyLabel() {
+			// Bail if no verify labels found.
+			if ( ! this.els.verify.length ) {
+				return;
+			}
+
+			// Iterate over verify labels and update text.
+			this.els.verify.each( function () {
+				const $this = $( this );
+				const $input = $this.find( 'input' );
+				const isChecked = Number( $input.is( ':checked' ) );
+				const labels = $input.data( 'label' );
+				const replacement = labels[ isChecked.toString() ];
+
+				$this
+					.contents()
+					.filter( function () {
+						return this.nodeType === 3; // Filter text nodes.
+					} )
+					.each( function () {
+						this.nodeValue = this.nodeValue.replace( '…', replacement );
+					} );
+			} );
 		},
 
 		/**
