@@ -23,7 +23,25 @@ abstract class Assets {
 	 *
 	 * @return void
 	 */
-	public static function enqueue_frontend(): void {}
+	public static function enqueue_frontend(): void {
+
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_register_script(
+			'paddle',
+			'https://cdn.paddle.com/paddle/paddle.js',
+			array( 'jquery' ),
+			null,
+			true
+		);
+
+		wp_register_script(
+			'woo-paddle-gateway-checkout',
+			woo_paddle_gateway()->service( 'file' )->asset_path( 'checkout.js' ),
+			array( 'jquery', 'paddle', 'wc-checkout' ),
+			woo_paddle_gateway()->get_version(),
+			true
+		);
+	}
 
 	/**
 	 * Enqueue admin scripts and styles.
