@@ -161,7 +161,9 @@ class Api {
 		);
 
 		// Check if the request was successful.
-		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
+		if ( is_wp_error( $request )
+			|| 200 !== wp_remote_retrieve_response_code( $request )
+		) {
 			return array();
 		}
 
@@ -211,7 +213,9 @@ class Api {
 		);
 
 		// Check if the request was successful.
-		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
+		if ( is_wp_error( $request )
+			|| 200 !== wp_remote_retrieve_response_code( $request )
+		) {
 			return array();
 		}
 

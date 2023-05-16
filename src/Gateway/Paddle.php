@@ -12,6 +12,7 @@
 namespace Woo_Paddle_Gateway\Gateway;
 
 use Woo_Paddle_Gateway\Api\Endpoints;
+use WC_Order;
 use WC_Payment_Gateway;
 
 /**
@@ -202,6 +203,88 @@ class Paddle extends WC_Payment_Gateway {
 				'default'      => '',
 				'desc_tip'     => true,
 			),
+		);
+	}
+
+	/**
+	 * Process the payment and return the result.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string|int $order_id Order ID.
+	 *
+	 * @return array
+	 */
+	public function process_payment( $order_id ) {
+
+		// Get the current API credentials.
+		$credentials = woo_paddle_gateway()->service( 'paddle_manager' )->get_gateway_keys();
+
+		// Check if the credentials are set.
+		if ( empty( $credentials['vendor_id'] )
+			|| empty( $credentials['vendor_auth_code'] )
+		) {
+			wc_add_notice( __( 'We encountered an issue while processing your request. It appears that the necessary API keys for the payment gateway are missing. Please ensure that you have provided the correct API keys required for the integration.', 'woo-paddle-gateway' ), 'error' );
+			return array();
+		}
+
+		// Initialize the order.
+		$order = new WC_Order( $order_id );
+		$items = $order->get_items();
+		$item  = $items[ array_keys( $items )[0] ];
+		$meta  = get_post_meta( $item->get_product_id(), '_woo_paddle_gateway', true );
+		$type  = $meta['type'] ?? 'subscription';
+
+		$request_args = array(
+			'discountable'      => 0,
+			'quantity_variable' => 0,
+			'is_recoverable'    => 0,
+			'vendor_id'         => wc_clean( $credentials['vendor_id'] ),
+			'vendor_auth_code'  => wc_clean( $credentials['vendor_auth_code'] ),
+			'passthrough'       => wc_clean( $order_id ),
+			'product_id'        => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),
+			'quantity'          => wc_clean( $item->get_quantity() ),
+			'customer_email'    => sanitize_email( $order->get_billing_email() ),
+			'prices'            => array( wc_clean( $order->get_currency() ) . ':' . wc_clean( $order->get_total() ) ),
+			'title'             => wc_clean( $item->get_name() ),
+			'return_url'        => esc_url( $order->get_checkout_order_received_url() ),
+			'image_url'         => esc_url( wp_get_attachment_image_src( get_post_thumbnail_id( $item->get_product_id() ), array( '220', '220' ), true )[0] ),
+		);
+
+		// Check if the order is a subscription.
+		if ( 'subscription' === $type ) {
+			// Recurring price(s) of the checkout (excluding the initial payment) only if the product_id specified is a subscription.
+			$request_args['recurring_prices'] = $request_args['prices'];
+		}
+
+		$request = wp_remote_post(
+			Endpoints::get_endpoint( $credentials['current_mode'], 'generate_pay_link' ),
+			array(
+				'timeout' => 30,
+				'body'    => $request_args,
+			)
+		);
+
+		// Check if the request was successful.
+		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
+			wc_add_notice( __( 'An error occurred while retrieving the checkout URL. Please verify if the gateway has been properly integrated.', 'woo-paddle-gateway' ), 'error' );
+			return array();
+		}
+
+		$response = json_decode( $request['body'], true );
+
+		// Check if the response is valid.
+		if ( ! isset( $response['success'] )
+			|| ! (bool) $response['success']
+		) {
+			wc_add_notice( __( 'Our system encountered an error while attempting to generate the payment link. Unfortunately, we are unable to proceed with the payment process at the moment.', 'woo-paddle-gateway' ), 'error' );
+			return array();
+		}
+
+		return array(
+			'order_id'       => wc_clean( $order->get_id() ),
+			'checkout_url'   => wc_clean( $response['response']['url'] ),
+			'customer_email' => wc_clean( $order->get_billing_email() ),
 		);
 	}
 

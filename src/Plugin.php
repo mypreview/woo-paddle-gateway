@@ -111,11 +111,15 @@ class Plugin extends Container {
 		$wc_cart = new WooCommerce\Cart();
 		$wc_cart->setup();
 
+		// WooCommerce checkout.
+		$wc_checkout = new WooCommerce\Checkout();
+		$wc_checkout->setup();
+
 		// WooCommerce product.
 		$wc_product = new WooCommerce\Product();
 		$wc_product->setup();
 
-		add_action( 'enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
+		add_action( 'wp_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_admin' ) );
 	}
 }

@@ -41,6 +41,15 @@ abstract class Assets {
 			woo_paddle_gateway()->get_version(),
 			true
 		);
+
+		wp_localize_script( 
+			'woo-paddle-gateway-checkout',
+			'woo_paddle_gateway_params', 
+			array(
+				'ajax_nonce'    => wp_create_nonce( 'woo_paddle_gateway_nonce' ),
+				'site_url' => add_query_arg( 'wc-api', 'woo_paddle_gateway_ajax_process_checkout', home_url( '/' ) ),
+			)
+		);
 	}
 
 	/**

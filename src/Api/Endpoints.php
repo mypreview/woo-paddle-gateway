@@ -36,6 +36,7 @@ abstract class Endpoints {
 			'catalog_products'   => "https://{$sandbox_prefix}vendors.paddle.com/api/2.0/product/get_products",
 			'subscription_plans' => "https://{$sandbox_prefix}vendors.paddle.com/api/2.0/subscription/plans",
 			'public_key'         => "https://{$sandbox_prefix}vendors.paddle.com/api/2.0/user/get_public_key",
+			'generate_pay_link'  => "https://{$sandbox_prefix}vendors.paddle.com/api/2.0/product/generate_pay_link",
 			'create_plan'        => "https://{$sandbox_prefix}vendors.paddle.com/api/2.0/subscription/plans_create",
 		);
 
