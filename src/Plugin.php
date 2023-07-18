@@ -25,7 +25,7 @@ class Plugin extends Container {
 	 *
 	 * @var string
 	 */
-	private string $version;
+	private $version;
 
 	/**
 	 * Constructor.
@@ -37,7 +37,7 @@ class Plugin extends Container {
 	 *
 	 * @return void
 	 */
-	public function __construct( string $version, string $file ) {
+	public function __construct( $version, $file ) {
 
 		// Set the version.
 		$this->version = $version;
@@ -62,7 +62,7 @@ class Plugin extends Container {
 	 *
 	 * @return void
 	 */
-	private function register_services(): void {
+	private function register_services() {
 
 		$provider = new PluginServiceProvider();
 		$provider->register( $this );
@@ -77,9 +77,21 @@ class Plugin extends Container {
 	 *
 	 * @return mixed
 	 */
-	public function service( string $key ) {
+	public function service( $key ) {
 
 		return $this[ $key ];
+	}
+
+	/**
+	 * Get the plugin slug.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function get_slug() {
+
+		return 'woo-paddle-gateway';
 	}
 
 	/**
@@ -89,7 +101,7 @@ class Plugin extends Container {
 	 *
 	 * @return string
 	 */
-	public function get_version(): string {
+	public function get_version() {
 
 		return $this->version;
 	}
@@ -101,25 +113,51 @@ class Plugin extends Container {
 	 *
 	 * @return void
 	 */
-	private function load(): void {
+	private function load() {
 
-		// Register payment gateways.
-		$gateways = new Gateway\Register();
-		$gateways->setup();
+		// Iterate through the classes and initialize them.
+		foreach ( $this->get_classes() as $class => $args ) {
 
-		// WooCommerce cart.
-		$wc_cart = new WooCommerce\Cart();
-		$wc_cart->setup();
+			// Skip if the condition is not met.
+			if ( isset( $args['condition'] ) && ! $args['condition'] ) {
+				continue;
+			}
 
-		// WooCommerce checkout.
-		$wc_checkout = new WooCommerce\Checkout();
-		$wc_checkout->setup();
+			// Initialize the class with parameters.
+			if ( isset( $args['params'] ) ) {
+				( new $class() )->setup( ...$args['params'] );
+				continue;
+			}
 
-		// WooCommerce product.
-		$wc_product = new WooCommerce\Product();
-		$wc_product->setup();
+			// Initialize the class.
+			( new $class() )->setup();
+		}
 
-		add_action( 'wp_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
+		add_action( 'before_woocommerce_init', array( 'Woo_Paddle_Gateway\\I18n', 'textdomain' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_admin' ) );
+		add_action( 'wp_enqueue_scripts', array( 'Woo_Paddle_Gateway\\Assets', 'enqueue_frontend' ) );
+	}
+
+	/**
+	 * Get the classes to load.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	private function get_classes() {
+
+		$is_ajax     = wp_doing_ajax();
+		$is_admin    = is_admin();
+		$is_frontend = ! $is_admin;
+		$classes     = array();
+
+		return array_combine(
+			array_map(
+				fn ( $key ) => __NAMESPACE__ . '\\' . $key,
+				array_keys( $classes )
+			),
+			$classes
+		);
 	}
 }
