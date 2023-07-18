@@ -30,7 +30,9 @@ abstract class Settings {
 			isset( $_GET['page'] )
 			&& 'wc-settings' === $_GET['page']
 			&& isset( $_GET['tab'] )
-			&& woo_paddle_gateway()->get_slug() === $_GET['tab']
+			&& 'checkout' === $_GET['tab']
+			&& isset( $_GET['section'] )
+			&& woo_paddle_gateway()->get_slug() === $_GET['section']
 		);
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 	}
@@ -44,11 +46,12 @@ abstract class Settings {
 	 */
 	public static function page_uri() {
 
-		// e.g, "http://example.com/wp-admin/admin.php?page=wc-settings&tab=woo-paddle-gateway".
+		// e.g, "http://example.com/wp-admin/admin.php?page=wc-settings&tab=checkout&section=woo-paddle-gateway".
 		return add_query_arg(
 			array(
-				'page' => 'wc-settings',
-				'tab'  => woo_paddle_gateway()->get_slug(),
+				'page'    => 'wc-settings',
+				'tab'     => 'checkout',
+				'section' => woo_paddle_gateway()->get_slug(),
 			),
 			admin_url( 'admin.php' )
 		);
