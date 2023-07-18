@@ -13,6 +13,7 @@ namespace Woo_Paddle_Gateway;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Woo_Paddle_Gateway\Settings;
 
 /**
  * Class PluginServiceProvider.
@@ -33,5 +34,8 @@ class PluginServiceProvider implements ServiceProviderInterface {
 
 		// Plugin core.
 		$pimple['template_manager'] = fn() => new TemplateManager();
+
+		// Plugin settings.
+		$pimple['settings'] = fn() => new Settings\Settings();
 	}
 }
