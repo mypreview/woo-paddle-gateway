@@ -36,6 +36,7 @@ class PluginServiceProvider implements ServiceProviderInterface {
 		$pimple['template_manager'] = fn() => new TemplateManager();
 
 		// Plugin settings.
-		$pimple['settings'] = fn() => new Settings\Settings();
+		$pimple['settings']         = fn() => new Settings\Settings();
+		$pimple['settings_general'] = fn() => new Settings\Sections\General();
 	}
 }
