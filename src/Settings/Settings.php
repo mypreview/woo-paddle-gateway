@@ -116,6 +116,6 @@ class Settings extends WC_Payment_Gateway {
 	 */
 	public function init_form_fields() {
 
-		$this->form_fields = array();
+		$this->form_fields = woo_paddle_gateway()->service( 'settings_general' )->get_fields();
 	}
 }
