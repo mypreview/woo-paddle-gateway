@@ -150,7 +150,20 @@ class Plugin extends Container {
 		$is_ajax     = wp_doing_ajax();
 		$is_admin    = is_admin();
 		$is_frontend = ! $is_admin;
-		$classes     = array();
+		$classes     = array(
+			'Compatibility\\WooCommerce' => array(
+				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
+			),
+			'Enhancements\\Meta' => array(
+				'condition' => $is_admin,
+				'params'    => array(
+					$this['file']->plugin_basename(),
+				),
+			),
+			'Enhancements\\Notices' => array(
+				'condition' => $is_admin,
+			),
+		);
 
 		return array_combine(
 			array_map(
