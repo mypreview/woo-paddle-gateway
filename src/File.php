@@ -23,7 +23,7 @@ class File {
 	 *
 	 * @var string
 	 */
-	private string $file;
+	private $file;
 
 	/**
 	 * Constructor.
@@ -34,7 +34,7 @@ class File {
 	 *
 	 * @return void
 	 */
-	public function __construct( string $file ) {
+	public function __construct( $file ) {
 
 		$this->file = $file;
 	}
@@ -46,9 +46,21 @@ class File {
 	 *
 	 * @return string
 	 */
-	public function plugin_file(): string {
+	public function plugin_file() {
 
 		return $this->file;
+	}
+
+	/**
+	 * Return the plugin base name.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function plugin_basename() {
+
+		return plugin_basename( $this->file );
 	}
 
 	/**
@@ -56,23 +68,39 @@ class File {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param string $path The path to the file.
+	 *
 	 * @return string
 	 */
-	public function plugin_path(): string {
+	public function plugin_path( $path = '' ) {
 
-		return untrailingslashit( plugin_dir_path( $this->file ) );
+		return path_join( plugin_dir_path( $this->file ), $path );
 	}
 
 	/**
 	 * Return the plugin url.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $path The path to the file.
 	 *
 	 * @return string
 	 */
-	public function plugin_url( string $path = '' ): string {
+	public function plugin_url( $path = '' ) {
 
 		return plugins_url( $path, $this->file );
+	}
+
+	/**
+	 * Return plugin dirname.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function dirname() {
+
+		return dirname( plugin_basename( $this->file ) );
 	}
 
 	/**
@@ -84,7 +112,7 @@ class File {
 	 *
 	 * @return string
 	 */
-	public function asset_path( string $file_name ): string {
+	public function asset_path( $file_name ) {
 
 		$min       = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : trailingslashit( 'minified' );
 		$directory = pathinfo( $file_name, PATHINFO_EXTENSION );
