@@ -3,6 +3,7 @@
 		"exclude": [
 			"!/languages",
 			"!vendor/*",
+			"docs",
 			"node_modules",
 			"CODE_OF_CONDUCT.md",
 			"composer.json",
@@ -17,7 +18,7 @@
 	"authors": [
 		{
 			"homepage": "https://mypreview.one",
-			"name": "MyPreview - Paddle Payment Gateway for WooCommerce"
+			"name": "MyPreview"
 		}
 	],
 	"autoload": {
@@ -30,7 +31,7 @@
 			"dealerdirect/phpcodesniffer-composer-installer": true
 		}
 	},
-	"description": "Accept Visa, MasterCard, American Express, Discover, JCB, Diners Club, iDEAL, Alipay, and more directly on your store with the Paddle payment gateway for WooCommerce, including PayPal, Apple Pay, Google Pay, and Microsoft Pay for mobile and desktop.",
+	"description": "Paddle Payment Gateway for WooCommerce.",
 	"extra": {
 		"scripts-description": {
 			"lint:wpcbf": "Fix coding standards warnings/errors automatically with PHP Code Beautifier",
@@ -38,7 +39,7 @@
 			"make-pot": "Create a POT file for the WordPress plugin in the current directory"
 		}
 	},
-	"homepage": "https://github.com/mypreview/woo-paddle-gateway",
+	"homepage": "https://mypreview.one",
 	"keywords": [
 		"WordPress",
 		"WooCommerce",
@@ -47,6 +48,8 @@
 	"license": "GPL-3.0",
 	"name": "mypreview/woo-paddle-gateway",
 	"require": {
+		"mahdiyazdani/wc-install-notice": "1.0.0",
+		"mahdiyazdani/wp-footer-rate": "1.0.1",
 		"php": ">=7.4",
 		"pimple/pimple": "^3.5"
 	},
