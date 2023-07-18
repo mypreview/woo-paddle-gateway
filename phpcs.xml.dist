@@ -18,20 +18,27 @@
 		 n flag: Do not print warnings.
 	-->
 	<arg value="psv" />
-	<!-- Strip the filepath down to the relevant bit. -->
+	<!-- Strip the filepaths down to the relevant bit. -->
 	<arg name="basepath" value="./" />
-	<!-- Check up to 8 files simultaneously. -->
+	<!-- Check up to 8 files simultanously. -->
 	<arg name="parallel" value="8" />
-	<!-- Only check the PHP files. JS and CSS files are checked separately with npm packages. -->
+	<!-- Only check the PHP files. JS, and CSS files are checked separately with npm packages. -->
 	<arg name="extensions" value="php" />
 	<!-- Check all files in this directory and the directories below it. -->
 	<file>.</file>
 	<!-- Exclude patterns. -->
+	<exclude-pattern>*/.wordpress-org/*</exclude-pattern>
+	<exclude-pattern>*/docs/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/languages/*</exclude-pattern>
 	<exclude-pattern>*/assets/*</exclude-pattern>
 	<exclude-pattern>/index\.php</exclude-pattern>
+	<!-- Exclude minified Javascript files. -->
+	<exclude-pattern>*.min.js</exclude-pattern>
+	<!-- Exclude minified CSS files. -->
+	<exclude-pattern>*.min.css</exclude-pattern>
+
 	<!--
 	#############################################################################
 	USE THE WordPress AND THE Theme Review RULESET
@@ -42,15 +49,12 @@
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed" />
-		<exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
-		<exclude name="PSR2.Classes.PropertyDeclaration.Underscore" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="Core.Commenting.CommentTags.AccessTag" />
 		<exclude name="Core.Commenting.CommentTags.AuthorTag" />
 	</rule>
 	<!-- Check for WooCommerce standards. -->
 	<rule ref="WooCommerce-Core">
-		<exclude name="WooCommerce.Commenting.CommentTags.AccessTag" />
 		<exclude name="WooCommerce.Commenting.CommentTags.AuthorTag" />
 		<exclude name="WooCommerce.Commenting.CommentTags.CopyrightTag" />
 		<exclude name="WooCommerce.Commenting.CommentHooks.MissingHookComment" />
@@ -72,10 +76,10 @@
 	<!-- Set the minimum supported WP version. This is used by several sniffs.
 		 The minimum version set here should be in line with the minimum WP version
 		 as set in the "Requires at least" tag in the readme.txt file. -->
-	<config name="minimum_supported_wp_version" value="6.0" />
+	<config name="minimum_supported_wp_version" value="5.9" />
 	<rule ref="WordPress.Arrays.MultipleStatementAlignment">
 		<properties>
-			<!-- No need to adjust the alignment of large arrays when the item with the largest key is removed. -->
+			<!-- No need to adjust alignment of large arrays when the item with the largest key is removed. -->
 			<property name="exact" value="false" />
 			<!-- Don't align multi-line items if ALL items in the array are multi-line. -->
 			<property name="alignMultilineItems" value="!=100" />
@@ -85,16 +89,22 @@
 	</rule>
 	<rule ref="WordPress.Security.EscapeOutput">
 		<properties>
-			<property name="customEscapingFunctions" type="array" value="wp_strip_all_tags,wc_clean,wc_help_tip,wc_esc_json,wc_format_content" />
+			<property name="customEscapingFunctions" type="array" value="wc_clean,wc_format_content" />
 		</properties>
 	</rule>
-	<!-- Verify that everything in the global namespace is prefixed with a theme-specific prefix.
+	<rule ref="WordPress.Security.ValidatedSanitizedInput">
+		<properties>
+			<property name="customSanitizingFunctions" type="array" value="wc_string_to_bool" />
+		</properties>
+	</rule>
+	<!-- Verify that everything in the global namespace is prefixed with a theme specific prefix.
 		 Multiple valid prefixes can be provided as a comma-delimited list. -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
 				<element value="woo_paddle_gateway"/>
 				<element value="Woo_Paddle_Gateway"/>
+				<element value="WOO_PADDLE_GATEWAY"/>
 			</property>
 		</properties>
 	</rule>
