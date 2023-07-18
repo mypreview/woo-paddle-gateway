@@ -154,15 +154,16 @@ class Plugin extends Container {
 			'Compatibility\\WooCommerce' => array(
 				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
 			),
-			'Enhancements\\Meta' => array(
+			'Enhancements\\Meta'         => array(
 				'condition' => $is_admin,
 				'params'    => array(
 					$this['file']->plugin_basename(),
 				),
 			),
-			'Enhancements\\Notices' => array(
+			'Enhancements\\Notices'      => array(
 				'condition' => $is_admin,
 			),
+			'Settings\\Register'         => array(),
 		);
 
 		return array_combine(
