@@ -29,3 +29,7 @@
   	color: red;
 	
 }
+
+.woo-paddle-gateway-page [name*="_vendor_public_key"] {
+	cursor: not-allowed;
+}
