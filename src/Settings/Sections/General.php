@@ -37,10 +37,99 @@ class General extends Section {
 			'title' => array(
 				'title'       => _x( 'Title', 'settings field title', 'woo-paddle-gateway' ),
 				'description' => _x( 'This controls the title which the user sees during checkout.', 'settings field description', 'woo-paddle-gateway' ),
-				'default'     => __( 'Paddle', 'woo-paddle-gateway' ),
+				'default'     => _x( 'Paddle', 'settings field default', 'woo-paddle-gateway' ),
 				'type'        => 'text',
 				'desc_tip'    => true,
 			),
+			'description' => array(
+				'title'       => _x( 'Description', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => _x( 'This controls the description which the user sees during checkout.', 'settings field description', 'woo-paddle-gateway' ),
+				'default'     => _x( 'Pay securely using your credit card, debit card, iDEAL, Google Pay, Apple Pay, AliPay, and PayPal.', 'settings field default', 'woo-paddle-gateway' ),
+				'type'        => 'textarea',
+				'css'         => 'max-width: 400px;',
+				'desc_tip'    => true,
+			),
+			'is_readonly' => array(
+				'title'   => _x( 'Protect Fields', 'settings field title', 'woo-paddle-gateway' ),
+				'label'   => _x( 'Disable the ability to edit any gateway credential fields.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'    => 'checkbox',
+				'default' => 'no',
+			),
+			'sandbox_mode' => array(
+				'title'       => _x( 'Sandbox Mode (Test)', 'settings field title', 'woo-paddle-gateway' ),
+				'label'       => '&#9888; ' . _x( 'Warning! Check this option to prevent Paddle from processing live transactions.', 'settings field description', 'woo-paddle-gateway' ),
+				'description' => _x( 'Place the payment gateway in test mode using test account credentials.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'        => 'checkbox',
+				'default'     => 'no',
+				'desc_tip'    => true,
+			),
+			'live_vendor_verify' => array(
+				'title'             => _x( 'Connection', 'settings field title', 'woo-paddle-gateway' ),
+				'label'             => '…',
+				'type'              => 'checkbox',
+				'default'           => 'no',
+				'custom_attributes' => array(
+					'data-label' => $this->connection_statuses(),
+				),
+				'desc_tip'          => true,
+			),
+			'live_vendor_id' => array(
+				'title'       => _x( 'Vendor ID', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => _x( 'Enter your Paddle vendor ID.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'        => 'number',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'live_vendor_auth_code' => array(
+				'title'       => _x( 'Auth Code', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => _x( 'Enter your Paddle Auth Code. This token will be used to interact with the API.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'        => 'textarea',
+				'css'         => 'max-width: 400px;',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'test_vendor_verify' => array(
+				'title'             => _x( 'Connection', 'settings field title', 'woo-paddle-gateway' ),
+				'label'             => '…',
+				'type'              => 'checkbox',
+				'default'           => 'no',
+				'custom_attributes' => array(
+					'data-label' => $this->connection_statuses(),
+				),
+				'desc_tip'          => true,
+			),
+			'test_vendor_id' => array(
+				'title'       => _x( 'Vendor ID', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => _x( 'Enter your Paddle vendor ID.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'        => 'number',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+			'test_vendor_auth_code' => array(
+				'title'       => _x( 'Auth Code', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => _x( 'Enter your Paddle Auth Code. This token will be used to interact with the API.', 'settings field description', 'woo-paddle-gateway' ),
+				'type'        => 'textarea',
+				'css'         => 'max-width: 400px;',
+				'default'     => '',
+				'desc_tip'    => true,
+			),
+		);
+	}
+
+	/**
+	 * Connection status labels.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	private function connection_statuses() {
+
+		return wp_json_encode(
+			array(
+				'1' => __( 'The API connection has been successfully established.', 'woo-paddle-gateway' ),
+				'0' => __( 'Please check your network connection and verify the API credentials.', 'woo-paddle-gateway' ),
+			)
 		);
 	}
 }
