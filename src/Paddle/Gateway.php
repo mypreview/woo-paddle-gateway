@@ -9,7 +9,7 @@
  * @package woo-paddle-gateway
  */
 
-namespace Woo_Paddle_Gateway\Util;
+namespace Woo_Paddle_Gateway\Paddle;
 
 use WC;
 
@@ -25,7 +25,7 @@ class Gateway {
 	 *
 	 * @return array
 	 */
-	private function get() {
+	public function get() {
 
 		// Bail early in case Payment Gateways are not available.
 		if ( ! WC()->payment_gateways() ) {
@@ -52,10 +52,10 @@ class Gateway {
 	 *
 	 * @return array
 	 */
-	private function get_keys() {
+	public function get_keys() {
 
 		// Get the payment gateway object.
-		$gateway = $this->get_gateway();
+		$gateway = $this->get();
 
 		// Bail early in case the Paddle gateway is not available.
 		if ( ! $gateway ) {
@@ -80,6 +80,7 @@ class Gateway {
 			'current_mode'     => $current_mode,
 			'vendor_id'        => $gateway->get_option( "{$current_mode}_vendor_id" ),
 			'vendor_auth_code' => $gateway->get_option( "{$current_mode}_vendor_auth_code" ),
+			'public_key'       => $gateway->get_option( "{$current_mode}_public_key" ),
 		);
 	}
 }
