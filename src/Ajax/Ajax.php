@@ -35,6 +35,24 @@ abstract class Ajax {
 	private $nonce;
 
 	/**
+	 * The action prefix.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	private $action_prefix;
+
+	/**
+	 * The action scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	private $action_scope;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
@@ -59,7 +77,19 @@ abstract class Ajax {
 	 */
 	public function register_admin() {
 
-		add_action( "wp_ajax_woo_paddle_gateway_{$this->action}", array( $this, 'ajax_callback' ) );
+		add_action( "{$this->action_scope}_ajax_{$this->action_prefix}{$this->action}", array( $this, 'ajax_callback' ) );
+	}
+
+	/**
+	 * Register the AJAX action for the front-end.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function register_frontend() {
+
+		add_action( "{$this->action_scope}_ajax_nopriv_{$this->action_prefix}{$this->action}", array( $this, 'ajax_callback' ) );
 	}
 
 	/**
@@ -70,6 +100,11 @@ abstract class Ajax {
 	 * @return void
 	 */
 	protected function verify_nonce() {
+
+		// Skip verification if nonce is empty.
+		if ( ! $this->nonce ) {
+			return;
+		}
 
 		check_ajax_referer( $this->nonce );
 	}
@@ -82,4 +117,33 @@ abstract class Ajax {
 	 * @return void
 	 */
 	abstract public function ajax_callback();
+
+	/**
+	 * Default action hook prefix.
+	 * Note that given prefix will be suffixed with `_`.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $prefix The action prefix. Default to plugin's slug.
+	 *
+	 * @return void
+	 */
+	public function set_action_prefix( $prefix = 'woo_paddle_gateway' ) {
+
+		$this->action_prefix = ! empty( $prefix ) ? rtrim( sanitize_key( $prefix ), '_' ) . '_' : '';
+	}
+
+	/**
+	 * Default action hook scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $scope The action scope. Default is `wp`.
+	 *
+	 * @return void
+	 */
+	public function set_action_scope( $scope = 'wp' ) {
+
+		$this->action_scope = sanitize_key( $scope );
+	}
 }

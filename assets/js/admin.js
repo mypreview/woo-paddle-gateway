@@ -37,8 +37,8 @@
 			this.cache();
 			this.bindEvents();
 			this.showConnectionStatus();
-			this.handleToggleProtect();
-			this.handleToggleSandbox();
+			this.handleOnToggleProtect();
+			this.handleOnToggleSandbox();
 		},
 
 		/**
@@ -49,8 +49,8 @@
 		 * @return {void}
 		 */
 		bindEvents() {
-			this.els.$protect.on( 'click', this.handleToggleProtect );
-			this.els.$sandbox.on( 'click', this.handleToggleSandbox );
+			this.els.$protect.on( 'click', this.handleOnToggleProtect );
+			this.els.$sandbox.on( 'click', this.handleOnToggleSandbox );
 		},
 
 		/**
@@ -60,7 +60,7 @@
 		 *
 		 * @return {void}
 		 */
-		handleToggleProtect() {
+		handleOnToggleProtect() {
 			// Whether the checkbox is checked or not.
 			const isChecked = admin.els.$protect.is( ':checked' );
 
@@ -74,7 +74,7 @@
 		 *
 		 * @return {void}
 		 */
-		handleToggleSandbox() {
+		handleOnToggleSandbox() {
 			// Whether the checkbox is checked or not.
 			const isChecked = admin.els.$sandbox.is( ':checked' );
 			const visible = 'table-row';

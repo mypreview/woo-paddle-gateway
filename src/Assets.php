@@ -77,7 +77,8 @@ abstract class Assets {
 	 */
 	public static function enqueue_frontend() {
 
-		$version = woo_paddle_gateway()->get_version();
+		$version      = woo_paddle_gateway()->get_version();
+		$gateway_keys = woo_paddle_gateway()->service( 'gateway' )->get_keys();
 
 		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		wp_register_script(
@@ -101,6 +102,20 @@ abstract class Assets {
 			array( 'jquery', 'wc-checkout', 'paddle' ),
 			$version,
 			true
+		);
+		wp_localize_script(
+			'woo-paddle-gateway',
+			'woo_paddle_gateway_admin_params',
+			array(
+				'is_sandbox'   => wc_clean( $saved_keys->is_sandbox ?? '' ),
+				'vendor_id'    => wc_clean( $saved_keys->vendor_id ?? '' ),
+				'checkout_uri' => add_query_arg(
+					array(
+						'wc-ajax' => is_wc_endpoint_url( 'order-pay' ) ? 'payment' : 'checkout',
+					),
+					home_url( '/' )
+				),
+			)
 		);
 	}
 }

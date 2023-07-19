@@ -154,6 +154,9 @@ class Plugin extends Container {
 			'Admin\\Product'             => array(
 				'condition' => $is_admin,
 			),
+			'Ajax\\Checkout'             => array(
+				'condition' => $is_ajax,
+			),
 			'Compatibility\\WooCommerce' => array(
 				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
 			),
@@ -167,6 +170,9 @@ class Plugin extends Container {
 				'condition' => $is_admin,
 			),
 			'Settings\\Register'         => array(),
+			'WooCommerce\\Checkout'      => array(
+				'condition' => $is_frontend,
+			),
 		);
 
 		return array_combine(

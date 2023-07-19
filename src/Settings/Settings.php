@@ -11,6 +11,7 @@
 
 namespace Woo_Paddle_Gateway\Settings;
 
+use WC_Order;
 use WC_Payment_Gateway;
 use Woo_Paddle_Gateway\Helper;
 
@@ -182,6 +183,133 @@ class Settings extends WC_Payment_Gateway {
 	public function init_form_fields() {
 
 		$this->form_fields = woo_paddle_gateway()->service( 'settings_general' )->get_fields();
+	}
+
+	/**
+	 * Process the payment and return the result.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string|int $order_id Order ID.
+	 *
+	 * @return array
+	 */
+	public function process_payment( $order_id ) {
+
+		// Get the current API credentials.
+		$saved_keys = woo_paddle_gateway()->service( 'gateway' )->get_keys();
+
+		// Check if the credentials are set.
+		if ( empty( $saved_keys->vendor_id ) || empty( $saved_keys->vendor_auth_code ) ) {
+			wc_add_notice(
+				__(
+					'We encountered an issue while processing your request. It appears that the necessary API keys for the payment gateway are missing. Please ensure that you have provided the correct API keys required for the integration.',
+					'woo-paddle-gateway'
+				),
+				'error'
+			);
+
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Paddle API credentials are missing.' );
+
+			return wp_json_encode(
+				array(
+					'result'  => 'failure',
+				)
+			);
+		}
+
+		// Initialize the order.
+		$order = new WC_Order( $order_id );
+		$items = $order->get_items();
+		$item  = $items[ array_keys( $items )[0] ];
+		$meta  = get_post_meta( $item->get_product_id(), '_woo_paddle_gateway', true );
+		$type  = $meta['type'] ?? 'subscription';
+
+		$request_args = array(
+			'discountable'      => 0,
+			'quantity_variable' => 0,
+			'is_recoverable'    => 0,
+			'vendor_id'         => wc_clean( $saved_keys->vendor_id ),
+			'vendor_auth_code'  => wc_clean( $saved_keys->vendor_auth_code ),
+			'passthrough'       => wc_clean( $order_id ),
+			'product_id'        => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),
+			'quantity'          => wc_clean( $item->get_quantity() ),
+			'customer_email'    => sanitize_email( $order->get_billing_email() ),
+			'prices'            => array( wc_clean( $order->get_currency() ) . ':' . wc_clean( $order->get_total() ) ),
+			'title'             => wc_clean( $item->get_name() ),
+			'return_url'        => esc_url( $order->get_checkout_order_received_url() ),
+			'image_url'         => esc_url( wp_get_attachment_image_src( get_post_thumbnail_id( $item->get_product_id() ), array( '220', '220' ), true )[0] ),
+		);
+
+		// Check if the order is a subscription.
+		if ( 'subscription' === $type ) {
+			// Recurring price(s) of the checkout (excluding the initial payment) only if the product_id specified is a subscription.
+			$request_args['recurring_prices'] = $request_args['prices'];
+		}
+
+		$request = wp_remote_post(
+			woo_paddle_gateway()->service( 'endpoints' )->get( 'generate_pay_link', $saved_keys->is_sandbox ),
+			array(
+				'timeout' => 30,
+				'body'    => $request_args,
+			)
+		);
+
+		// Check if the request was successful.
+		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
+			wc_add_notice(
+				__(
+					'An error occurred while retrieving the checkout URL. Please verify if the gateway has been properly integrated.',
+					'woo-paddle-gateway'
+				),
+				'error'
+			);
+
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Paddle API request failed.' );
+
+			return wp_json_encode(
+				array(
+					'result'  => 'failure',
+				)
+			);
+		}
+
+		// Decode the response body.
+		$response = json_decode( wp_remote_retrieve_body( $request ) );
+
+		// Check if the response is valid.
+		if ( empty( $response->success ) || empty( $response->response->url ) ) {
+			wc_add_notice(
+				__(
+					'Our system encountered an error while attempting to generate the payment link. Unfortunately, we are unable to proceed with the payment process at the moment.',
+					'woo-paddle-gateway'
+				),
+				'error'
+			);
+
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+			error_log( 'Generated Paddle checkout URL is invalid or failed to generate.' );
+
+			return wp_json_encode(
+				array(
+					'result'  => 'failure',
+				)
+			);
+		}
+
+		echo wp_json_encode(
+			array(
+				'result'            => 'success',
+				'order_id'          => wc_clean( $order->get_id() ),
+				'generate_pay_link' => wc_clean( $response->response->url ),
+				'customer_country'  => wc_clean( $order->get_billing_country() ),
+				'customer_email'    => wc_clean( $order->get_billing_email() ),
+			)
+		);
+
+		exit();
 	}
 
 	/**
