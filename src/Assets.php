@@ -45,6 +45,14 @@ abstract class Assets {
 		);
 
 		wp_register_script(
+			'woo-paddle-gateway-product',
+			woo_paddle_gateway()->service( 'file' )->asset_path( 'product.js' ),
+			array( 'jquery' ),
+			$version,
+			true
+		);
+
+		wp_register_script(
 			'woo-paddle-gateway-dismiss',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'dismiss.js' ),
 			array( 'jquery' ),

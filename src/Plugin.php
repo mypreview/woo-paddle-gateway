@@ -151,6 +151,9 @@ class Plugin extends Container {
 		$is_admin    = is_admin();
 		$is_frontend = ! $is_admin;
 		$classes     = array(
+			'Admin\\Product'             => array(
+				'condition' => $is_admin,
+			),
 			'Compatibility\\WooCommerce' => array(
 				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
 			),

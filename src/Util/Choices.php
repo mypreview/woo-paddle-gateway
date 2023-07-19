@@ -62,7 +62,7 @@ class Choices {
 				continue;
 			}
 
-			$options[ wc_clean( $product->id ) ] = wc_clean( $product->name . ' (' . $product->id . ')' );
+			$options[ wc_clean( $product->id ) ] = wc_clean( $product->name . ' (#' . $product->id . ')' );
 		}
 
 		return $options;
@@ -95,7 +95,7 @@ class Choices {
 				continue;
 			}
 
-			$options[ wc_clean( $plan->id ) ] = wc_clean( $plan->name . ' (' . $plan->id . ')' );
+			$options[ wc_clean( $plan->id ) ] = wc_clean( $plan->name . ' (#' . $plan->id . ')' );
 		}
 
 		return $options;
