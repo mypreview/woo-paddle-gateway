@@ -71,6 +71,7 @@ abstract class Assets {
 
 		$version = woo_paddle_gateway()->get_version();
 
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		wp_register_script(
 			'paddle',
 			'https://cdn.paddle.com/paddle/paddle.js',

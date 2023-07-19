@@ -75,8 +75,8 @@ class Gateway {
 		$current_mode = $is_sandbox ? 'test' : 'live';
 
 		// Return the keys.
-		return array(
-			'test_mode'        => $is_sandbox,
+		return (object) array(
+			'is_sandbox'       => $is_sandbox,
 			'current_mode'     => $current_mode,
 			'vendor_id'        => $gateway->get_option( "{$current_mode}_vendor_id" ),
 			'vendor_auth_code' => $gateway->get_option( "{$current_mode}_vendor_auth_code" ),

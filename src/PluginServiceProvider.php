@@ -38,14 +38,17 @@ class PluginServiceProvider implements ServiceProviderInterface {
 		$pimple['template_manager'] = fn() => new TemplateManager();
 
 		// Plugin Paddle gateway.
-		$pimple['gateway'] = fn() => new Paddle\Gateway();
+		$pimple['gateway']  = fn() => new Paddle\Gateway();
+		$pimple['plans']    = fn() => new Paddle\Plans();
+		$pimple['products'] = fn() => new Paddle\Products();
 
 		// Plugin settings.
 		$pimple['settings']         = fn() => new Settings\Settings();
 		$pimple['settings_general'] = fn() => new Settings\Sections\General();
+		$pimple['options']          = fn() => new Settings\Options();
 
 		// Plugin utilities.
+		$pimple['choices']   = fn() => new Util\Choices();
 		$pimple['endpoints'] = fn() => new Util\Endpoints();
-
 	}
 }

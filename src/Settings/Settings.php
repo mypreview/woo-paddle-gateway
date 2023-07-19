@@ -199,7 +199,7 @@ class Settings extends WC_Payment_Gateway {
 		$public_key       = $this->get_field_value( "{$this->current_mode}_vendor_public_key", 'textarea', $data );
 
 		// Bail early in case the API credentials have not changed.
-		if ( $this->saved_keys['vendor_id'] === $vendor_id && $this->saved_keys['vendor_auth_code'] === $vendor_auth_code ) {
+		if ( $this->saved_keys->vendor_id === $vendor_id && $this->saved_keys->vendor_auth_code === $vendor_auth_code ) {
 			return null;
 		}
 
@@ -235,6 +235,9 @@ class Settings extends WC_Payment_Gateway {
 
 		// Update the public key.
 		$this->update_option( "{$this->current_mode}_vendor_public_key", wc_clean( $response->response->public_key ) );
+
+		woo_paddle_gateway()->service( 'products' )->fetch();
+		woo_paddle_gateway()->service( 'plans' )->fetch();
 
 		return 'yes';
 	}
