@@ -45,6 +45,7 @@ class PluginServiceProvider implements ServiceProviderInterface {
 		$pimple['settings_general'] = fn() => new Settings\Sections\General();
 
 		// Plugin utilities.
-		$pimple['file'] = fn() => new Util\Endpoints();
+		$pimple['endpoints'] = fn() => new Util\Endpoints();
+
 	}
 }

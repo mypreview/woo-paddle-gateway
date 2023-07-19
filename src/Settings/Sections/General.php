@@ -46,7 +46,7 @@ class General extends Section {
 				'description' => _x( 'This controls the description which the user sees during checkout.', 'settings field description', 'woo-paddle-gateway' ),
 				'default'     => _x( 'Pay securely using your credit card, debit card, iDEAL, Google Pay, Apple Pay, AliPay, and PayPal.', 'settings field default', 'woo-paddle-gateway' ),
 				'type'        => 'textarea',
-				'css'         => 'max-width: 400px;',
+				'css'         => 'max-width:400px;',
 				'desc_tip'    => true,
 			),
 			'is_readonly' => array(
@@ -84,9 +84,23 @@ class General extends Section {
 				'title'       => _x( 'Auth Code', 'settings field title', 'woo-paddle-gateway' ),
 				'description' => _x( 'Enter your Paddle Auth Code. This token will be used to interact with the API.', 'settings field description', 'woo-paddle-gateway' ),
 				'type'        => 'textarea',
-				'css'         => 'max-width: 400px;',
+				'css'         => 'max-width:400px;',
 				'default'     => '',
 				'desc_tip'    => true,
+			),
+			'live_vendor_public_key' => array(
+				'title'             => _x( 'Public Key', 'woo-paddle-gateway' ),
+				'description'       => _x( 'This key will be used to encrypt the payment data.', 'woo-paddle-gateway' ),
+				'placeholder'       => _x( 'The public key will be automatically generated. Do not change this value.', 'woo-paddle-gateway' ),
+				'type'              => 'textarea',
+				'class'             => 'disabled',
+				'css'               => 'max-width:400px;',
+				'default'           => '',
+				'custom_attributes' => array(
+					'readonly' => 'true',
+					'tabindex' => '-1',
+				),
+				'desc_tip'          => true,
 			),
 			'test_vendor_verify' => array(
 				'title'             => _x( 'Connection', 'settings field title', 'woo-paddle-gateway' ),
@@ -109,9 +123,23 @@ class General extends Section {
 				'title'       => _x( 'Auth Code', 'settings field title', 'woo-paddle-gateway' ),
 				'description' => _x( 'Enter your Paddle Auth Code. This token will be used to interact with the API.', 'settings field description', 'woo-paddle-gateway' ),
 				'type'        => 'textarea',
-				'css'         => 'max-width: 400px;',
+				'css'         => 'max-width:400px;',
 				'default'     => '',
 				'desc_tip'    => true,
+			),
+			'test_vendor_public_key' => array(
+				'title'             => _x( 'Public Key', 'woo-paddle-gateway' ),
+				'description'       => _x( 'This key will be used to encrypt the payment data.', 'woo-paddle-gateway' ),
+				'placeholder'       => _x( 'The public key will be automatically generated. Do not change this value.', 'woo-paddle-gateway' ),
+				'type'              => 'textarea',
+				'class'             => 'disabled',
+				'css'               => 'max-width:400px;',
+				'default'           => '',
+				'custom_attributes' => array(
+					'readonly' => 'true',
+					'tabindex' => '-1',
+				),
+				'desc_tip'          => true,
 			),
 		);
 	}

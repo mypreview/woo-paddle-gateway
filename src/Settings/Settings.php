@@ -20,6 +20,34 @@ use Woo_Paddle_Gateway\Helper;
 class Settings extends WC_Payment_Gateway {
 
 	/**
+	 * The saved keys.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
+	private $saved_keys;
+
+	/**
+	 * Whether the current mode is sandbox or not.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var bool
+	 */
+	private $is_sandbox;
+
+	/**
+	 * The current mode.
+	 * It could be either test or live.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	private $current_mode;
+
+	/**
 	 * Setup settings class.
 	 *
 	 * @since 1.0.0
@@ -96,15 +124,16 @@ class Settings extends WC_Payment_Gateway {
 	 *
 	 * @return void
 	 */
-	public function process_admin_options(): void {
+	public function process_admin_options() {
+
+		$this->saved_keys   = woo_paddle_gateway()->service( 'gateway' )->get_keys();
+		$this->is_sandbox   = wc_string_to_bool( $this->get_field_value( 'sandbox_mode', 'checkbox', $this->get_post_data() ) );
+		$this->current_mode = $this->is_sandbox ? 'test' : 'live';
 
 		// Save the gateway settings.
 		parent::process_admin_options();
 
-		$data       = $this->get_post_data();
-		$is_sandbox = wc_string_to_bool( $this->get_field_value( 'sandbox_mode', 'checkbox', $data ) );
-		$mode       = $is_sandbox ? 'test' : 'live';
-		$verify     = $this->verify_connection_status( $data, $is_sandbox );
+		$verify = $this->verify_connection_status();
 
 		// Bail early in case the API connection status is not set.
 		if ( ! $verify ) {
@@ -112,18 +141,16 @@ class Settings extends WC_Payment_Gateway {
 		}
 
 		// Update the API connection status.
-		$this->update_option( "{$mode}_vendor_verify", wc_bool_to_string( $verify ) );
+		$this->update_option( "{$this->current_mode}_vendor_verify", wc_bool_to_string( $verify ) );
 
 		/**
 		 * Fires after the gateway settings are saved.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param array  $data   The gateway settings data.
-		 * @param string $mode   The gateway mode (test/live).
-		 * @param bool   $verify The API connection status.
+		 * @param string $mode The gateway mode (test/live).
 		 */
-		do_action( 'woo_paddle_gateway_settings_saved', $data, $mode, $verify );
+		do_action( 'woo_paddle_gateway_settings_saved', $this->current_mode );
 	}
 
 	/**
@@ -162,25 +189,22 @@ class Settings extends WC_Payment_Gateway {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|array $data       The POST data.
-	 * @param bool         $is_sandbox Whether the gateway is in sandbox mode or not.
-	 *
 	 * @return null|string
 	 */
-	private function verify_connection_status( $data, $is_sandbox ) {
+	private function verify_connection_status() {
 
-		$mode             = $is_sandbox ? 'test' : 'live';
-		$saved_keys       = woo_paddle_gateway()->service( 'gateway' )->get_keys();
-		$vendor_id        = $this->get_field_value( "{$mode}_vendor_id", 'text', $data );
-		$vendor_auth_code = $this->get_field_value( "{$mode}_vendor_auth_code", 'text', $data );
+		$data             = $this->get_post_data();
+		$vendor_id        = $this->get_field_value( "{$this->current_mode}_vendor_id", 'text', $data );
+		$vendor_auth_code = $this->get_field_value( "{$this->current_mode}_vendor_auth_code", 'text', $data );
+		$public_key       = $this->get_field_value( "{$this->current_mode}_vendor_public_key", 'textarea', $data );
 
 		// Bail early in case the API credentials have not changed.
-		if ( $saved_keys['vendor_id'] === $vendor_id && $saved_keys['vendor_auth_code'] === $vendor_auth_code ) {
+		if ( $this->saved_keys['vendor_id'] === $vendor_id && $this->saved_keys['vendor_auth_code'] === $vendor_auth_code ) {
 			return null;
 		}
 
 		$request = wp_remote_post(
-			woo_paddle_gateway()->service( 'endpoints' )->get( 'public_key', $is_sandbox ),
+			woo_paddle_gateway()->service( 'endpoints' )->get( 'public_key', $this->is_sandbox ),
 			array(
 				'timeout' => 30,
 				'body'    => array(
@@ -192,17 +216,26 @@ class Settings extends WC_Payment_Gateway {
 
 		// Check if the request was successful.
 		if ( is_wp_error( $request ) || 200 !== wp_remote_retrieve_response_code( $request ) ) {
-			return false;
+			// Flush the public key.
+			$this->update_option( "{$this->current_mode}_vendor_public_key", '' );
+
+			return 'no';
 		}
 
 		// Decode the response body.
 		$response = json_decode( wp_remote_retrieve_body( $request ) );
 
 		// Check if the response is valid.
-		if ( ! empty( $response->success ) && ! empty( $response->response->public_key ) ) {
-			return false;
+		if ( empty( $response->success ) || empty( $response->response->public_key ) ) {
+			// Flush the public key.
+			$this->update_option( "{$this->current_mode}_vendor_public_key", '' );
+
+			return 'no';
 		}
 
-		return true;
+		// Update the public key.
+		$this->update_option( "{$this->current_mode}_vendor_public_key", wc_clean( $response->response->public_key ) );
+
+		return 'yes';
 	}
 }
