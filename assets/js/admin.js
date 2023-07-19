@@ -64,7 +64,7 @@
 			// Whether the checkbox is checked or not.
 			const isChecked = admin.els.$protect.is( ':checked' );
 
-			admin.alterFields( 'vendor', { readonly: isChecked ? 'readonly' : null } );
+			admin.alterFields( '[name*="_vendor_"]:not(.disabled)', { readonly: isChecked ? 'readonly' : null } );
 		},
 
 		/**
@@ -80,8 +80,8 @@
 			const visible = 'table-row';
 			const hidden = 'none';
 
-			admin.alterFields( 'test', { style: `display: ${ isChecked ? visible : hidden }` }, 'tr' );
-			admin.alterFields( 'live', { style: `display: ${ isChecked ? hidden : visible }` }, 'tr' );
+			admin.alterFields( '[name*="_test_"]', { style: `display: ${ isChecked ? visible : hidden }` }, 'tr' );
+			admin.alterFields( '[name*="_live_"]', { style: `display: ${ isChecked ? hidden : visible }` }, 'tr' );
 		},
 
 		/**
@@ -119,14 +119,14 @@
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param {string}      id     Field ID.
-		 * @param {Object}      attrs  Attributes.
-		 * @param {null|string} parent Parent selector.
+		 * @param {string}      selector Selector.
+		 * @param {Object}      attrs    Attributes.
+		 * @param {null|string} parent   Parent selector.
 		 *
 		 * @return {void}
 		 */
-		alterFields( id, attrs, parent ) {
-			const $fields = $( `[name*="_${ id }_"]` );
+		alterFields( selector, attrs, parent ) {
+			const $fields = $( selector );
 
 			// Bail if no fields found.
 			if ( ! $fields.length ) {
