@@ -230,12 +230,17 @@ class Settings extends WC_Payment_Gateway {
 			'discountable'      => 0,
 			'quantity_variable' => 0,
 			'is_recoverable'    => 0,
+			'marketing_consent' => 1,
 			'vendor_id'         => wc_clean( $saved_keys->vendor_id ),
 			'vendor_auth_code'  => wc_clean( $saved_keys->vendor_auth_code ),
 			'passthrough'       => wc_clean( $order_id ),
 			'product_id'        => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),
+			'expires'           => current_datetime()->modify( '+1 day' )->format( 'Y-m-d' ),
 			'quantity'          => wc_clean( $item->get_quantity() ),
+			'custom_message'    => wc_clean( $item->get_product()->get_short_description() ),
 			'customer_email'    => sanitize_email( $order->get_billing_email() ),
+			'customer_country'  => wc_clean( $order->get_billing_country() ),
+			'customer_postcode' => wc_clean( $order->get_billing_postcode() ),
 			'prices'            => array( wc_clean( $order->get_currency() ) . ':' . wc_clean( $order->get_total() ) ),
 			'title'             => wc_clean( $item->get_name() ),
 			'return_url'        => add_query_arg( 'checkout', '{checkout_hash}', $order->get_checkout_order_received_url() ),
@@ -245,7 +250,7 @@ class Settings extends WC_Payment_Gateway {
 		// Check if the order is a subscription.
 		if ( 'subscription' === $type ) {
 			// Recurring price(s) of the checkout (excluding the initial payment) only if the product_id specified is a subscription.
-			$request_args['recurring_prices'] = $request_args['prices'];
+			$request_args['recurring_prices'] = array( wc_clean( $order->get_currency() ) . ':' . wc_format_decimal( $order->get_subtotal(), wc_get_price_decimals() ) );
 		}
 
 		$request = wp_remote_post(
