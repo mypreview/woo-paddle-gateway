@@ -44,6 +44,14 @@ abstract class Assets {
 			true
 		);
 
+		wp_register_style(
+			'woo-paddle-gateway-order',
+			woo_paddle_gateway()->service( 'file' )->asset_path( 'order.css' ),
+			array( 'woocommerce_admin_styles' ),
+			$version,
+			'screen'
+		);
+
 		wp_register_script(
 			'woo-paddle-gateway-product',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'product.js' ),

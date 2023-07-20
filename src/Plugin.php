@@ -151,6 +151,9 @@ class Plugin extends Container {
 		$is_admin    = is_admin();
 		$is_frontend = ! $is_admin;
 		$classes     = array(
+			'Admin\\Order'               => array(
+				'condition' => $is_admin,
+			),
 			'Admin\\Product'             => array(
 				'condition' => $is_admin,
 			),

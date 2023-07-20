@@ -20,15 +20,6 @@ use Woo_Paddle_Gateway\Admin;
 class Checkout {
 
 	/**
-	 * Checkout hash meta key.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string
-	 */
-	const ORDER_META_KEY = '_woo_paddle_gateway';
-
-	/**
 	 * Setup hooks and filters.
 	 *
 	 * @since 1.0.0
@@ -77,7 +68,7 @@ class Checkout {
 		$checkout_hash = wp_unslash( $_GET['checkout'] );
 
 		// Check if order meta has already been saved.
-		if ( $order->get_meta( self::ORDER_META_KEY ) ) {
+		if ( get_post_meta( $order_id, Admin\Order::META_KEY ) ) {
 			return;
 		}
 
@@ -111,8 +102,9 @@ class Checkout {
 			)
 		);
 
-		$order->update_meta_data(
-			self::ORDER_META_KEY,
+		update_post_meta(
+			$order_id,
+			Admin\Order::META_KEY,
 			array(
 				'type'          => wc_clean( $type ),
 				'product_id'    => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),

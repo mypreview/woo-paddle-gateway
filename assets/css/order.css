@@ -1,0 +1,7 @@
+/* Order details page.
+ * The following will apply to all single order pages.
+----------------------------------------------------------------------------- */
+.woo-paddle-gateway-paddle-details th,
+.woo-paddle-gateway-paddle-details-type td {
+    text-transform: capitalize;
+}
