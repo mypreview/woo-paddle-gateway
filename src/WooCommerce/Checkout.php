@@ -77,7 +77,7 @@ class Checkout {
 		$checkout_hash = wp_unslash( $_GET['checkout'] );
 
 		// Check if order meta has already been saved.
-		if ( $order->get_meta_data( self::ORDER_META_KEY ) ) {
+		if ( $order->get_meta( self::ORDER_META_KEY ) ) {
 			return;
 		}
 
@@ -119,6 +119,11 @@ class Checkout {
 				'checkout_hash' => wc_clean( $checkout_hash ),
 			)
 		);
+
+		// Redirect to the order received page to remove the query string.
+		wp_safe_redirect( $order->get_checkout_order_received_url() );
+
+		exit;
 	}
 
 }
