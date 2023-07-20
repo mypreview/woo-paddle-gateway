@@ -19,11 +19,17 @@ if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
 
 <table class="widefat fixed striped woo-paddle-gateway-paddle-details">
 	<tbody>
-		<?php foreach ( $args['meta'] as $label => $value ) : ?>
+		<?php
+		// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		foreach ( $args['meta'] as $label => $value ) :
+			?>
 		<tr class="woo-paddle-gateway-paddle-details-<?php echo sanitize_html_class( $label ); ?>">
 			<th scope="row"><?php echo esc_html( str_replace( '_', ' ', $label ) ); ?></th>
-			<td><?php echo esc_html( $value ); ?></td>
+			<td><?php echo make_clickable( $value ); ?></td>
 		</tr>
-		<?php endforeach; ?>
+			<?php
+		endforeach;
+		// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		?>
 	</tbody>
 </table>

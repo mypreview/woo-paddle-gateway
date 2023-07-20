@@ -160,6 +160,7 @@ class Plugin extends Container {
 			'Ajax\\Checkout'             => array(
 				'condition' => $is_ajax,
 			),
+			'Api\\Webhook'               => array(),
 			'Compatibility\\WooCommerce' => array(
 				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
 			),

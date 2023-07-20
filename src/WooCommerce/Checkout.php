@@ -64,51 +64,24 @@ class Checkout {
 		if ( ! $order instanceof WC_Order || empty( $_GET['checkout'] ) ) {
 			return;
 		}
-
-		$checkout_hash = wp_unslash( $_GET['checkout'] );
-
-		// Check if order meta has already been saved.
-		if ( get_post_meta( $order_id, Admin\Order::META_KEY ) ) {
-			return;
-		}
-
+		
 		if ( ! empty( $_GET['key'] ) ) {
 			$order->add_order_note(
 				sprintf( /* translators: %s: Checkout ID. */
 					__( 'WooCommerce order created. (Key: %s).', 'woo-paddle-gateway' ),
 					wc_clean( wp_unslash( $_GET['key'] ) )
-				)
-			);
+					)
+				);
 		}
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-
+			
+		$checkout_hash = wp_unslash( $_GET['checkout'] );
+		
 		// Add the checkout hash to the order notes.
 		$order->add_order_note(
 			sprintf( /* translators: %s: Checkout ID. */
 				__( 'Paddle charge complete. (Checkout ID: %s).', 'woo-paddle-gateway' ),
 				wc_clean( $checkout_hash )
-			)
-		);
-
-		$items = $order->get_items();
-		$item  = $items[ array_keys( $items )[0] ];
-		$meta  = get_post_meta( $item->get_product_id(), Admin\Product::META_KEY, true );
-		$type  = $meta['type'] ?? 'subscription';
-
-		$order->add_order_note(
-			sprintf( /* translators: %s: Checkout ID. */
-				__( 'Paddle %s created.', 'woo-paddle-gateway' ),
-				wc_clean( ucfirst( $type ) )
-			)
-		);
-
-		update_post_meta(
-			$order_id,
-			Admin\Order::META_KEY,
-			array(
-				'type'          => wc_clean( $type ),
-				'product_id'    => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),
-				'checkout_hash' => wc_clean( $checkout_hash ),
 			)
 		);
 

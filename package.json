@@ -27,7 +27,7 @@
 		"minify:css:path": "replace-in-files --string='../' --replacement='../../' assets/css/minified",
 		"minify:css": "rimraf assets/css/minified && cleancss --batch --batch-suffix '' assets/css/*.css --output assets/css/minified",
 		"minify:js": "rimraf assets/js/minified && npm run format && babel assets/js/*.js --out-dir assets/js/minified --no-comments --minified --presets=@babel/preset-env",
-		"ultrahook": "ultrahook -k LVe9IdXrHenNQ2DrBHMxZOafVJ0yUEWJ woo-paddle-gateway http://woo-paddle-gateway.local"
+		"ultrahook": "ultrahook -k LVe9IdXrHenNQ2DrBHMxZOafVJ0yUEWJ woo-paddle-gateway http://woo-paddle-gateway.local/wp-json/woo-paddle-gateway/v1/webhook"
 	},
 	"devDependencies": {
 		"@babel/cli": "7.21.5",

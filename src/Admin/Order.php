@@ -55,7 +55,7 @@ class Order {
 		// Register the meta-box.
 		add_meta_box(
 			woo_paddle_gateway()->get_slug(),
-			__( 'Paddle details', 'woo-additional-terms-pro' ),
+			__( 'Paddle details', 'woo-paddle-gateway' ),
 			array( $this, 'show_paddle_details' ),
 			null,
 			'normal'
@@ -78,7 +78,7 @@ class Order {
 			return;
 		}
 
-        // Check if the current user has the required capability to manage WooCommerce.
+		// Check if the current user has the required capability to manage WooCommerce.
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return;
 		}

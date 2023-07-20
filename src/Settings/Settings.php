@@ -365,7 +365,7 @@ class Settings extends WC_Payment_Gateway {
 		}
 
 		// Update the public key.
-		$this->update_option( "{$this->current_mode}_vendor_public_key", wc_clean( $response->response->public_key ) );
+		$this->update_option( "{$this->current_mode}_vendor_public_key", $response->response->public_key );
 
 		woo_paddle_gateway()->service( 'products' )->fetch();
 		woo_paddle_gateway()->service( 'plans' )->fetch();

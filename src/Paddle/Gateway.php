@@ -80,7 +80,7 @@ class Gateway {
 			'current_mode'     => $current_mode,
 			'vendor_id'        => $gateway->get_option( "{$current_mode}_vendor_id" ),
 			'vendor_auth_code' => $gateway->get_option( "{$current_mode}_vendor_auth_code" ),
-			'public_key'       => $gateway->get_option( "{$current_mode}_public_key" ),
+			'public_key'       => $gateway->get_option( "{$current_mode}_vendor_public_key" ),
 		);
 	}
 }

@@ -2,6 +2,7 @@
  * The following will apply to all single order pages.
 ----------------------------------------------------------------------------- */
 .woo-paddle-gateway-paddle-details th,
-.woo-paddle-gateway-paddle-details-type td {
+.woo-paddle-gateway-paddle-details-type td,
+.woo-paddle-gateway-paddle-details-status td {
     text-transform: capitalize;
 }
