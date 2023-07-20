@@ -13,6 +13,7 @@ namespace Woo_Paddle_Gateway\Settings;
 
 use WC_Order;
 use WC_Payment_Gateway;
+use Woo_Paddle_Gateway\Admin;
 use Woo_Paddle_Gateway\Helper;
 
 /**
@@ -223,7 +224,7 @@ class Settings extends WC_Payment_Gateway {
 		$order = new WC_Order( $order_id );
 		$items = $order->get_items();
 		$item  = $items[ array_keys( $items )[0] ];
-		$meta  = get_post_meta( $item->get_product_id(), '_woo_paddle_gateway', true );
+		$meta  = get_post_meta( $item->get_product_id(), Admin\Product::META_KEY, true );
 		$type  = $meta['type'] ?? 'subscription';
 
 		$request_args = array(
