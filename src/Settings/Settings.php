@@ -238,7 +238,7 @@ class Settings extends WC_Payment_Gateway {
 			'customer_email'    => sanitize_email( $order->get_billing_email() ),
 			'prices'            => array( wc_clean( $order->get_currency() ) . ':' . wc_clean( $order->get_total() ) ),
 			'title'             => wc_clean( $item->get_name() ),
-			'return_url'        => esc_url( $order->get_checkout_order_received_url() ),
+			'return_url'        => add_query_arg( 'checkout', '{checkout_hash}', $order->get_checkout_order_received_url() ),
 			'image_url'         => esc_url( wp_get_attachment_image_src( get_post_thumbnail_id( $item->get_product_id() ), array( '220', '220' ), true )[0] ),
 		);
 
@@ -302,10 +302,7 @@ class Settings extends WC_Payment_Gateway {
 		echo wp_json_encode(
 			array(
 				'result'            => 'success',
-				'order_id'          => wc_clean( $order->get_id() ),
 				'generate_pay_link' => wc_clean( $response->response->url ),
-				'customer_country'  => wc_clean( $order->get_billing_country() ),
-				'customer_email'    => wc_clean( $order->get_billing_email() ),
 			)
 		);
 
