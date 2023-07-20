@@ -84,7 +84,7 @@ abstract class Assets {
 		wp_register_script(
 			'paddle',
 			'https://cdn.paddle.com/paddle/paddle.js',
-			array( 'jquery', 'wc-checkout' ),
+			array( 'jquery' ),
 			null,
 			true
 		);
@@ -99,7 +99,7 @@ abstract class Assets {
 		wp_register_script(
 			'woo-paddle-gateway',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'script.js' ),
-			array( 'jquery', 'wc-checkout', 'paddle' ),
+			array( 'jquery', 'jquery-blockui', 'wc-checkout' ),
 			$version,
 			true
 		);
@@ -107,8 +107,6 @@ abstract class Assets {
 			'woo-paddle-gateway',
 			'woo_paddle_gateway_admin_params',
 			array(
-				'is_sandbox'   => wc_clean( $saved_keys->is_sandbox ?? '' ),
-				'vendor_id'    => wc_clean( $saved_keys->vendor_id ?? '' ),
 				'checkout_uri' => add_query_arg(
 					array(
 						'wc-ajax' => is_wc_endpoint_url( 'order-pay' ) ? 'payment' : 'checkout',
