@@ -25,7 +25,7 @@ if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
 			?>
 		<tr class="woo-paddle-gateway-paddle-details-<?php echo sanitize_html_class( $label ); ?>">
 			<th scope="row"><?php echo esc_html( str_replace( '_', ' ', $label ) ); ?></th>
-			<td><?php echo make_clickable( $value ); ?></td>
+			<td><?php echo wp_kses( make_clickable( $value ), array( 'a' => array( 'href' => array() ) ) ); ?></td>
 		</tr>
 			<?php
 		endforeach;

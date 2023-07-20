@@ -64,19 +64,19 @@ class Checkout {
 		if ( ! $order instanceof WC_Order || empty( $_GET['checkout'] ) ) {
 			return;
 		}
-		
+
 		if ( ! empty( $_GET['key'] ) ) {
 			$order->add_order_note(
 				sprintf( /* translators: %s: Checkout ID. */
 					__( 'WooCommerce order created. (Key: %s).', 'woo-paddle-gateway' ),
 					wc_clean( wp_unslash( $_GET['key'] ) )
-					)
-				);
+				)
+			);
 		}
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			
+
 		$checkout_hash = wp_unslash( $_GET['checkout'] );
-		
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
 		// Add the checkout hash to the order notes.
 		$order->add_order_note(
 			sprintf( /* translators: %s: Checkout ID. */

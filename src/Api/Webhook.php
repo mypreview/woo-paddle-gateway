@@ -11,15 +11,18 @@
 
 namespace Woo_Paddle_Gateway\Api;
 
-use WC_Order;
 use WP_Error;
 use WP_REST_Server;
-use Woo_Paddle_Gateway\Admin;
 
 /**
  * Class Webhook.
  */
 class Webhook {
+
+	/**
+	 * Use the Events trait.
+	 */
+	use Events;
 
 	/**
 	 * The namespace.
@@ -170,76 +173,6 @@ class Webhook {
 
 		// Return true to indicate successful dispatch and validation.
 		return true;
-	}
-
-
-	/**
-	 * Handle the subscription payment created webhook.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array $webhook_data The webhook data.
-	 *
-	 * @return void
-	 */
-	private function subscription_created( $webhook_data ) {
-
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
-
-		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
-			return;
-		}
-
-		// Set the order status to "Completed".
-		$order->update_status( 'completed' );
-
-		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
-	}
-
-	/**
-	 * Set subscription meta data.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int   $order_id     The order ID.
-	 * @param array $webhook_data The webhook data.
-	 *
-	 * @return void
-	 */
-	private function set_subscription_meta_data( $order_id, $webhook_data ) {
-
-		// Define the keys to be updated and cleaned.
-		$keys_to_update = array(
-			'status',
-			'checkout_id',
-			'marketing_consent',
-			'next_bill_date',
-			'subscription_id',
-			'subscription_plan_id',
-			'linked_subscriptions',
-			'cancel_url',
-			'update_url',
-		);
-
-		// Retrieve existing order meta data.
-		$order_meta = (array) get_post_meta( $order_id, Admin\Order::META_KEY, true );
-		$order_meta = array_filter( $order_meta );
-
-		// Loop through the keys to be updated and clean the data if available.
-		foreach ( $keys_to_update as $key ) {
-			// Skip if the key is not set.
-			if ( empty( $webhook_data[ $key ] ) ) {
-				continue;
-			}
-
-			$order_meta[ $key ] = wc_clean( $webhook_data[ $key ] );
-		}
-
-		// Save updated order meta data.
-		update_post_meta( $order_id, Admin\Order::META_KEY, $order_meta );
 	}
 
 }
