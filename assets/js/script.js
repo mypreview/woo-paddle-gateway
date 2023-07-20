@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 /* global jQuery, woo_paddle_gateway_admin_params */
 
-( function ( $, Paddle, l10n ) {
+( function ( $, l10n ) {
 	'use strict';
 
 	const script = {
@@ -16,7 +16,7 @@
 			this.els = {};
 			this.vars = {};
 			this.vars.wc = '.woocommerce';
-			this.vars.errorContainer = '.woocommerce-NoticeGroup.woocommerce-NoticeGroup-checkout';
+			this.vars.messages = '.woocommerce-error, .woocommerce-message';
 			this.els.$form = $( 'form.woocommerce-checkout' );
 			this.els.$gateway = $( '#payment_method_woo-paddle-gateway' );
 		},
@@ -30,24 +30,7 @@
 		 */
 		init() {
 			this.cache();
-			this.setup();
 			this.bindEvents();
-		},
-
-		setup() {
-			// Set Paddle environment.
-			if ( l10n.is_sandbox ) {
-				Paddle.Environment.set( 'sandbox' );
-			}
-
-			if ( ! l10n.vendor_id ) {
-				return;
-			}
-
-			// Set Paddle vendor ID.
-			Paddle.Setup( {
-				vendor: Number( l10n.vendor_id ),
-			} );
 		},
 
 		/**
@@ -76,6 +59,8 @@
 			}
 
 			event.preventDefault();
+			event.stopImmediatePropagation();
+			event.stopPropagation();
 
 			const $form = $( this );
 
@@ -83,29 +68,34 @@
 				return false;
 			}
 
-			Paddle.Spinner.show();
-
 			$.ajax( {
 				type: 'POST',
 				async: true,
 				dataType: 'json',
 				url: l10n.checkout_uri,
 				data: script.els.$form.serialize(),
+				beforeSend() {
+					$form.block( {
+						message: null,
+						overlayCSS: {
+							background: '#fff',
+							opacity: 0.6,
+						},
+					} );
+				},
 				success( response ) {
-					// Unblock the form.
-					$form.unblock();
-					$( script.vars.errorContainer ).remove();
+					$( script.vars.messages ).remove();
 
 					try {
 						if ( 'success' === response.result ) {
-							Paddle.Checkout.open( {
-								email: response.customer_email,
-								country: response.customer_country,
-								override: response.generate_pay_link,
-								disableLogout: true,
-								method: 'overlay',
-								displayModeTheme: 'light',
-							} );
+							if (
+								-1 === response.generate_pay_link.indexOf( 'https://' ) ||
+								-1 === response.generate_pay_link.indexOf( 'http://' )
+							) {
+								window.location = response.generate_pay_link;
+							} else {
+								window.location = decodeURI( response.generate_pay_link );
+							}
 						} else if ( 'failure' === response.result ) {
 							throw 'Result failure';
 						} else {
@@ -123,8 +113,11 @@
 							$( document.body ).trigger( 'update_checkout' );
 						}
 
+						// Remove the UI blocker.
+						$form.unblock();
+
 						// Remove old errors.
-						$( script.vars.errorContainer ).remove();
+						$( script.vars.messages ).remove();
 
 						// Add new errors
 						if ( response.messages ) {
@@ -137,13 +130,35 @@
 						// Lose focus for all fields
 						$form.find( '.input-text, select' ).blur();
 
-						// Hide spinner.
-						Paddle.Spinner.hide();
+						// Scroll to the notices.
+						script.scrollToNotices();
 					}
 				},
 			} );
 		},
+
+		/**
+		 * Scroll to notices.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return {void}
+		 */
+		scrollToNotices() {
+			const $selector = $( this.vars.messages );
+
+			if ( ! $selector.length ) {
+				return;
+			}
+
+			$( 'html, body' ).animate(
+				{
+					scrollTop: $selector.offset().top - 100,
+				},
+				1000
+			);
+		},
 	};
 
 	script.init();
-} )( jQuery, window.Paddle, woo_paddle_gateway_admin_params );
+} )( jQuery, woo_paddle_gateway_admin_params );
