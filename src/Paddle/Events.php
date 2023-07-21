@@ -232,6 +232,7 @@ trait Events {
 			'status',
 			'subscription_id',
 			'subscription_plan_id',
+			'next_payment_amount',
 			'receipt_url',
 			'cancel_url',
 			'update_url',

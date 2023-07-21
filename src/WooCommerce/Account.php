@@ -19,13 +19,6 @@ use Woo_Paddle_Gateway\Admin;
  */
 class Account {
 
-	const ALLOWED_DETAILS = array(
-		'status',
-		'next_bill_date',
-		'subscription_id',
-		'cancellation_effective_date',
-	);
-
 	/**
 	 * Setup hooks and filters.
 	 *
@@ -58,8 +51,7 @@ class Account {
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'order/subscription-details.php',
 			array(
-				'meta'            => get_post_meta( $order->get_id(), Admin\Order::META_KEY, true ),
-				'allowed_details' => self::ALLOWED_DETAILS,
+				'meta' => get_post_meta( $order->get_id(), Admin\Order::META_KEY, true ),
 			)
 		);
 	}
