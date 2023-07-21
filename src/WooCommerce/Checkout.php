@@ -30,6 +30,7 @@ class Checkout {
 
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'enqueue' ) );
 		add_action( 'woocommerce_thankyou_woo-paddle-gateway', array( $this, 'save_checkout_hash' ) );
+		remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
 	}
 
 	/**

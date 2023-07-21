@@ -12,12 +12,13 @@ defined( 'WC_VERSION' ) || exit;
 
 // If the order meta is empty, return.
 if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
+	esc_html_e( 'No Paddle log found for this order.', 'woo-paddle-gateway' );
 	return;
 }
 
 ?>
 
-<div class="woo-paddle-gateway-paddle-details">
+<div class="woo-paddle-gateway-paddle-log">
 	<?php
 	// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 	foreach ( $args['meta'] as $event ) :
@@ -34,7 +35,7 @@ if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
 			<table class="widefat fixed striped">
 				<tbody>
 					<?php foreach ( $event as $label => $value ) : ?>
-						<tr class="woo-paddle-gateway-paddle-details-<?php echo sanitize_html_class( $label ); ?>">
+						<tr class="woo-paddle-gateway-paddle-log-<?php echo sanitize_html_class( $label ); ?>">
 							<th scope="row"><?php echo esc_html( str_replace( '_', ' ', $label ) ); ?></th>
 							<td><?php echo wp_kses( make_clickable( $value ), array( 'a' => array( 'href' => array() ) ) ); ?></td>
 						</tr>

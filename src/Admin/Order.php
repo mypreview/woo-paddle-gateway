@@ -37,7 +37,7 @@ class Order {
 	 */
 	public function setup() {
 
-		add_action( 'add_meta_boxes_shop_order', array( $this, 'register_paddle_details' ) );
+		add_action( 'add_meta_boxes_shop_order', array( $this, 'register_paddle_log' ) );
 	}
 
 	/**
@@ -47,7 +47,7 @@ class Order {
 	 *
 	 * @return void
 	 */
-	public function register_paddle_details() {
+	public function register_paddle_log() {
 
 		// Enqueue the order meta-box assets.
 		wp_enqueue_style( 'woo-paddle-gateway-order' );
@@ -55,15 +55,15 @@ class Order {
 		// Register the meta-box.
 		add_meta_box(
 			woo_paddle_gateway()->get_slug(),
-			__( 'Paddle details', 'woo-paddle-gateway' ),
-			array( $this, 'show_paddle_details' ),
+			__( 'Paddle Log', 'woo-paddle-gateway' ),
+			array( $this, 'show_paddle_log' ),
 			null,
 			'normal'
 		);
 	}
 
 	/**
-	 * Show paddle details.
+	 * Show paddle log.
 	 *
 	 * @since 1.0.0
 	 *
@@ -71,7 +71,7 @@ class Order {
 	 *
 	 * @return void
 	 */
-	public function show_paddle_details( $post ) {
+	public function show_paddle_log( $post ) {
 
 		// Ensure the $post is a valid WP_Post object.
 		if ( ! $post instanceof WP_Post ) {
@@ -85,7 +85,7 @@ class Order {
 
 		// Display the Paddle details template.
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
-			'order/paddle-details.php',
+			'order/paddle-log.php',
 			array(
 				'meta' => get_post_meta( $post->ID, self::META_KEY, true ),
 			)

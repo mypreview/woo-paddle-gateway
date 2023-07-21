@@ -1,21 +1,21 @@
 /* Order details page.
  * The following will apply to all single order pages.
 ----------------------------------------------------------------------------- */
-.woo-paddle-gateway-paddle-details {
+.woo-paddle-gateway-paddle-log {
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
 }
 
-.woo-paddle-gateway-paddle-details details {
+.woo-paddle-gateway-paddle-log details {
 	padding: 5px 8px 8px;
 	background-color: #f0f0f1;
 }
 
-.woo-paddle-gateway-paddle-details table {
+.woo-paddle-gateway-paddle-log table {
 	margin-top: 10px;
 }
 
-.woo-paddle-gateway-paddle-details th {
+.woo-paddle-gateway-paddle-log th {
 	text-transform: capitalize;
 }
