@@ -174,6 +174,9 @@ class Plugin extends Container {
 			),
 			'Paddle\\Webhook'            => array(),
 			'Settings\\Register'         => array(),
+			'WooCommerce\\Account'       => array(
+				'condition' => $is_frontend,
+			),
 			'WooCommerce\\Cart'          => array(
 				'condition' => $is_frontend,
 			),

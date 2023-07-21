@@ -4,14 +4,14 @@
  *
  * @since 1.0.0
  *
- * @package woo-store-vacation-pro
+ * @package woo-paddle-gateway
  */
 
 defined( 'ABSPATH' ) || exit;
 defined( 'WC_VERSION' ) || exit;
 
-// If the order meta is empty, return.
-if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
+// If the order logs is empty, return.
+if ( empty( $args['logs'] ) ) {
 	esc_html_e( 'No Paddle log found for this order.', 'woo-paddle-gateway' );
 	return;
 }
@@ -21,7 +21,7 @@ if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
 <div class="woo-paddle-gateway-paddle-log">
 	<?php
 	// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-	foreach ( $args['meta'] as $event ) :
+	foreach ( $args['logs'] as $event ) :
 		?>
 		<details>
 			<summary>

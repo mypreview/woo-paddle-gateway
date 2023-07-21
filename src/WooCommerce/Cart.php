@@ -37,7 +37,7 @@ class Cart {
 	 *
 	 * @return bool
 	 */
-	public function only_one_in_cart( bool $passed ): bool {
+	public function only_one_in_cart( $passed ) {
 
 		// Make sure to empty the cart before adding a new product.
 		wc_empty_cart();

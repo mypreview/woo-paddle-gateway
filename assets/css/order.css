@@ -16,6 +16,8 @@
 	margin-top: 10px;
 }
 
+.woo-paddle-gateway-paddle-details th,
+.woo-paddle-gateway-paddle-details-status,
 .woo-paddle-gateway-paddle-log th {
 	text-transform: capitalize;
 }

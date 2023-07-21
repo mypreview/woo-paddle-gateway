@@ -42,7 +42,7 @@ trait Events {
 		$order->update_status( 'completed' );
 
 		// Set the order meta data.
-		$this->set_meta_data( $order_id, $webhook_data );
+		$this->save_payload_log( $order_id, $webhook_data );
 	}
 
 	/**
@@ -68,7 +68,7 @@ trait Events {
 		$order->update_status( 'cancelled' );
 
 		// Set the order meta data.
-		$this->set_meta_data( $order_id, $webhook_data );
+		$this->save_payload_log( $order_id, $webhook_data );
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait Events {
 		$order->update_status( 'refunded' );
 
 		// Set the order meta data.
-		$this->set_meta_data( $order_id, $webhook_data );
+		$this->save_payload_log( $order_id, $webhook_data );
 	}
 
 	/**
@@ -130,7 +130,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->set_meta_data( $order_id, $webhook_data );
+		$this->save_payload_log( $order_id, $webhook_data );
 	}
 
 	/**
@@ -176,7 +176,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->set_meta_data( $order_id, $webhook_data );
+		$this->save_payload_log( $order_id, $webhook_data );
 	}
 
 	/**
@@ -189,7 +189,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function set_meta_data( $order_id, $webhook_data ) {
+	private function save_payload_log( $order_id, $webhook_data ) {
 
 		// Retrieve the alert name.
 		$alert_name = $webhook_data['alert_name'];
@@ -199,11 +199,57 @@ trait Events {
 		}
 
 		// Retrieve existing order meta data.
+		$paddle_log = (array) get_post_meta( $order_id, Admin\Order::LOG_KEY, true );
+		$paddle_log = array_filter( $paddle_log );
+
+		// Add the webhook data to the order meta data.
+		array_push( $paddle_log, $webhook_data );
+
+		// Save updated order meta data.
+		update_post_meta( $order_id, Admin\Order::LOG_KEY, $paddle_log );
+
+		// Save the subscription meta data.
+		$this->save_subscription_meta( $order_id, $webhook_data );
+	}
+
+	/**
+	 * Set subscription meta data.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int   $order_id     The order ID.
+	 * @param array $webhook_data The webhook data.
+	 *
+	 * @return void
+	 */
+	private function save_subscription_meta( $order_id, $webhook_data ) {
+
+		$keys_to_update = array(
+			'checkout_id',
+			'cancellation_effective_date',
+			'linked_subscriptions',
+			'next_bill_date',
+			'status',
+			'subscription_id',
+			'subscription_plan_id',
+			'receipt_url',
+			'cancel_url',
+			'update_url',
+		);
+
+		// Retrieve existing order meta data.
 		$order_meta = (array) get_post_meta( $order_id, Admin\Order::META_KEY, true );
 		$order_meta = array_filter( $order_meta );
 
-		// Add the webhook data to the order meta data.
-		array_push( $order_meta, $webhook_data );
+		// Loop through the keys to be updated and clean the data if available.
+		foreach ( $keys_to_update as $key ) {
+			// Skip if the key is not set.
+			if ( empty( $webhook_data[ $key ] ) ) {
+				continue;
+			}
+
+			$order_meta[ $key ] = wc_clean( $webhook_data[ $key ] );
+		}
 
 		// Save updated order meta data.
 		update_post_meta( $order_id, Admin\Order::META_KEY, $order_meta );
