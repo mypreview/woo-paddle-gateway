@@ -21,13 +21,13 @@
 
 .woo-paddle-gateway-page [for*="_vendor_verify"] [checked="checked"]::before {
 	content: "\2705";
-  	color: green;
+	color: var(--wc-green, #7ad03a);
 }
 
 .woo-paddle-gateway-page [for*="_vendor_verify"] input:not([checked="checked"])::before {
 	content: "\274C";
-  	color: red;
-	
+	color: var(--wc-red, #a00);
+
 }
 
 .woo-paddle-gateway-page [name*="_vendor_public_key"] {

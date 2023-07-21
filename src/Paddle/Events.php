@@ -9,7 +9,7 @@
  * @package woo-paddle-gateway
  */
 
-namespace Woo_Paddle_Gateway\Api;
+namespace Woo_Paddle_Gateway\Paddle;
 
 use WC_Order;
 use Woo_Paddle_Gateway\Admin;
@@ -42,7 +42,7 @@ trait Events {
 		$order->update_status( 'completed' );
 
 		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
+		$this->set_meta_data( $order_id, $webhook_data );
 	}
 
 	/**
@@ -68,7 +68,7 @@ trait Events {
 		$order->update_status( 'cancelled' );
 
 		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
+		$this->set_meta_data( $order_id, $webhook_data );
 	}
 
 	/**
@@ -94,7 +94,7 @@ trait Events {
 		$order->update_status( 'refunded' );
 
 		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
+		$this->set_meta_data( $order_id, $webhook_data );
 	}
 
 	/**
@@ -130,7 +130,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
+		$this->set_meta_data( $order_id, $webhook_data );
 	}
 
 	/**
@@ -176,7 +176,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->set_subscription_meta_data( $order_id, $webhook_data );
+		$this->set_meta_data( $order_id, $webhook_data );
 	}
 
 	/**
@@ -189,39 +189,21 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function set_subscription_meta_data( $order_id, $webhook_data ) {
+	private function set_meta_data( $order_id, $webhook_data ) {
 
-		// Define the keys to be updated and cleaned.
-		$keys_to_update = array(
-			'status',
-			'checkout_id',
-			'marketing_consent',
-			'next_bill_date',
-			'cancellation_effective_date',
-			'subscription_id',
-			'subscription_plan_id',
-			'linked_subscriptions',
-			'refund_type',
-			'fee_refund',
-			'tax_refund',
-			'refund_reason',
-			'cancel_url',
-			'update_url',
-		);
+		// Retrieve the alert name.
+		$alert_name = $webhook_data['alert_name'];
+
+		if ( empty( $alert_name ) ) {
+			return;
+		}
 
 		// Retrieve existing order meta data.
 		$order_meta = (array) get_post_meta( $order_id, Admin\Order::META_KEY, true );
 		$order_meta = array_filter( $order_meta );
 
-		// Loop through the keys to be updated and clean the data if available.
-		foreach ( $keys_to_update as $key ) {
-			// Skip if the key is not set.
-			if ( empty( $webhook_data[ $key ] ) ) {
-				continue;
-			}
-
-			$order_meta[ $key ] = wc_clean( $webhook_data[ $key ] );
-		}
+		// Add the webhook data to the order meta data.
+		array_push( $order_meta, $webhook_data );
 
 		// Save updated order meta data.
 		update_post_meta( $order_id, Admin\Order::META_KEY, $order_meta );

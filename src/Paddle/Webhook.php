@@ -9,7 +9,7 @@
  * @package woo-paddle-gateway
  */
 
-namespace Woo_Paddle_Gateway\Api;
+namespace Woo_Paddle_Gateway\Paddle;
 
 use WP_Error;
 use WP_REST_Server;
