@@ -26,8 +26,8 @@ if ( ! isset( $args['meta'] ) || empty( $args['meta'] ) ) {
 		<details>
 			<summary>
 				<?php
-				printf(
-					esc_html__( 'Payload response: "%s"', 'mypreview-paddle' ),
+				printf( /* translators: %s: Event name. */
+					esc_html__( 'Payload response: "%s"', 'woo-paddle-gateway' ),
 					'<strong>' . esc_html( str_replace( '_', ' ', $event['alert_name'] ) ) . '</strong>'
 				);
 				?>
