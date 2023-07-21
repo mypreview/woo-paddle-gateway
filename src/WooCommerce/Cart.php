@@ -23,7 +23,7 @@ class Cart {
 	 *
 	 * @return void
 	 */
-	public function setup(): void {
+	public function setup() {
 
 		add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'only_one_in_cart' ) );
 	}
