@@ -11,6 +11,7 @@
 
 namespace Woo_Paddle_Gateway\WooCommerce;
 
+use WC;
 use WC_Order;
 use Woo_Paddle_Gateway\Admin;
 
@@ -28,8 +29,13 @@ class Checkout {
 	 */
 	public function setup() {
 
-		add_action( 'woocommerce_before_checkout_form', array( $this, 'enqueue' ) );
+		add_action( 'woocommerce_before_checkout_form', array( $this, 'enqueue_checkout_assets' ) );
+		add_action( 'woocommerce_before_checkout_form', array( $this, 'apply_coupon_via_url' ) );
+		add_filter( 'woocommerce_coupon_message', array( $this, 'update_coupon_message' ), 10, 3 );
+		add_filter( 'woocommerce_checkout_fields', array( $this, 'unset_checkout_fields' ) );
 		add_action( 'woocommerce_thankyou_woo-paddle-gateway', array( $this, 'save_checkout_hash' ) );
+		add_filter( 'woocommerce_enable_order_notes_field', '__return_false' );
+		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 		remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
 	}
 
@@ -40,10 +46,107 @@ class Checkout {
 	 *
 	 * @return void
 	 */
-	public function enqueue() {
+	public function enqueue_checkout_assets() {
 
-		wp_enqueue_style( 'woo-paddle-gateway' );
 		wp_enqueue_script( 'woo-paddle-gateway' );
+	}
+
+	/**
+	 * Apply coupon via URL parameter if provided.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function apply_coupon_via_url() {
+
+		// Check if a coupon code is applied via URL parameter.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( empty( $_GET['coupon'] ) ) {
+			// If no coupon code is provided in the URL, return early.
+			return;
+		}
+
+		// Check if the cart is empty or the site is in the customizer.
+		if ( WC()->cart->is_empty() || is_customize_preview() ) {
+			// If the cart is empty, return early.
+			return;
+		}
+
+		// Get the coupon code from the URL parameter.
+		$coupon_code = wp_unslash( $_GET['coupon'] );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		// Get the list of currently applied coupons.
+		$applied_coupons = WC()->cart->get_applied_coupons();
+
+		// If the coupon is already applied, return early.
+		if ( in_array( $coupon_code, $applied_coupons, true ) ) {
+			return;
+		}
+
+		// If a valid coupon code is provided, add it to the cart.
+		if ( empty( $coupon_code ) ) {
+			return;
+		}
+
+		WC()->cart->add_discount( wc_clean( $coupon_code ) );
+	}
+
+	/**
+	 * Update the coupon message to display the coupon description.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $message Coupon message.
+	 * @param string $code    Coupon code.
+	 * @param object $coupon  Coupon object.
+	 *
+	 * @return string
+	 */
+	public function update_coupon_message( $message, $code, $coupon ) {
+
+		// Check if a coupon code is applied via URL parameter.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		if ( empty( $_GET['coupon'] ) ) {
+			// If no coupon code is provided in the URL, return early.
+			return $message;
+		}
+
+		// Check if a coupon code is applied via URL parameter.
+		$coupon_code = wc_clean( wp_unslash( $_GET['coupon'] ) );
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		// If there's no coupon code applied or it doesn't match the current coupon code, return the original message.
+		if ( empty( $coupon_code ) || $coupon->get_code() !== $coupon_code ) {
+			return $message;
+		}
+
+		// If the coupon has no description, return the original message.
+		if ( empty( $coupon->get_description() ) ) {
+			return $message;
+		}
+
+		// Update the coupon message to display the coupon description.
+		return esc_html( $coupon->get_description() );
+	}
+
+	/**
+	 * Remove the extra fields from the checkout form.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $fields Checkout fields.
+	 *
+	 * @return array
+	 */
+	public function unset_checkout_fields( $fields ) {
+
+		unset( $fields['billing']['billing_address_1'] );
+		unset( $fields['billing']['billing_city'] );
+		unset( $fields['billing']['billing_state'] );
+
+		return $fields;
 	}
 
 	/**

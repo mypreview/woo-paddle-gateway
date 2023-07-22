@@ -238,7 +238,7 @@ class Settings extends WC_Payment_Gateway {
 			'product_id'        => wc_clean( $meta[ $meta['type'] ?? 'subscription' ] ),
 			'expires'           => current_datetime()->modify( '+1 day' )->format( 'Y-m-d' ),
 			'quantity'          => wc_clean( $item->get_quantity() ),
-			'custom_message'    => wc_clean( $item->get_product()->get_short_description() ),
+			'custom_message'    => wc_clean( wc_trim_string( $item->get_product()->get_description(), 400 ) ),
 			'customer_email'    => sanitize_email( $order->get_billing_email() ),
 			'customer_country'  => wc_clean( $order->get_billing_country() ),
 			'customer_postcode' => wc_clean( $order->get_billing_postcode() ),

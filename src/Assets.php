@@ -97,13 +97,6 @@ abstract class Assets {
 			true
 		);
 
-		wp_register_style(
-			'woo-paddle-gateway',
-			woo_paddle_gateway()->service( 'file' )->asset_path( 'style.css' ),
-			array(),
-			$version,
-			'screen'
-		);
 		wp_register_script(
 			'woo-paddle-gateway',
 			woo_paddle_gateway()->service( 'file' )->asset_path( 'script.js' ),
