@@ -131,6 +131,11 @@ trait Events {
 
 		// Set the order meta data.
 		$this->save_payload_log( $order_id, $webhook_data );
+
+		if ( isset( $webhook_data['initial_payment'] ) && ! wc_string_to_bool( $webhook_data['initial_payment'] ) ) {
+			// Create a renewal order.
+			$this->create_renewal_order( $order, 'wc-completed' );
+		}
 	}
 
 	/**
@@ -177,6 +182,9 @@ trait Events {
 
 		// Set the order meta data.
 		$this->save_payload_log( $order_id, $webhook_data );
+
+		// Create a renewal order.
+		$this->create_renewal_order( $order, 'wc-failed' );
 	}
 
 	/**
@@ -210,6 +218,83 @@ trait Events {
 
 		// Save the subscription meta data.
 		$this->save_subscription_meta( $order_id, $webhook_data );
+	}
+
+	/**
+	 * Create a renewal order based on the original order.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WC_Order $order  The original order instance.
+	 * @param string   $status The order status.
+	 *
+	 * @return void
+	 */
+	private function create_renewal_order( $order, $status ) {
+
+		// Step 1: Create a new order instance and copy customer info to it.
+		$renewal = wc_create_order();
+
+		$renewal->set_customer_id( $order->get_user_id() );
+		$renewal->set_address(
+			array(
+				'first_name' => $order->get_billing_first_name(),
+				'last_name'  => $order->get_billing_last_name(),
+				'country'    => $order->get_billing_country(),
+				'postcode'   => $order->get_billing_postcode(),
+				'email'      => $order->get_billing_email(),
+			),
+			'billing'
+		);
+
+		// Step 2: Add the product to the new order.
+		// Retrieve the first item from the original order.
+		$items = $order->get_items();
+		$item  = $items[ array_keys( $items )[0] ];
+		$renewal->add_product( $item->get_product(), $item->get_quantity() );
+		$renewal->set_total( $order->get_total() );
+		$renewal->set_payment_method( $order->get_payment_method() );
+		$renewal->set_payment_method_title( $order->get_payment_method_title() );
+
+		// Step 3: Set the order status for the renewal order.
+		$renewal->update_status( $status );
+
+		// Step 4: Add order notes for the renewal order and the original order.
+		// Note: The order ID is cleaned to prevent any potential security issues.
+		$renewal->add_order_note(
+			sprintf( /* translators: %s: Checkout ID. */
+				__( 'Renewal order created for the subscription order #%1$s %2$s.', 'woo-paddle-gateway' ),
+				'<a href="' . esc_url( admin_url( 'post.php?post=' . $order->get_id() . '&action=edit' ) ) . '">' . $order->get_id() . '</a>',
+				wc_clean( $order->get_status() )
+			)
+		);
+
+		// Step 5: Save the renewal order.
+		$renewal->save();
+
+		// Step 6: Add a note to the original order about the renewal order.
+		$order->add_order_note(
+			sprintf( /* translators: %s: Checkout ID. */
+				__( 'A renewal order #%1$s with %2$s status has been created.', 'woo-paddle-gateway' ),
+				'<a href="' . esc_url( admin_url( 'post.php?post=' . $renewal->get_id() . '&action=edit' ) ) . '">' . $renewal->get_id() . '</a>',
+				wc_clean( $renewal->get_status() )
+			)
+		);
+
+		// Step 7: Store the info in the meta-data.
+		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_META_KEY, true );
+		$order_meta = array_filter( $order_meta );
+
+		// Add the renewal order ID and other data to the order meta data.
+		$order_meta[] = array(
+			'order_id' => $renewal->get_id(),
+			'total'    => $renewal->get_total(),
+			'date'     => $renewal->get_date_created(),
+			'status'   => $renewal->get_status(),
+		);
+
+		// Step 8: Save the updated renewal meta data.
+		update_post_meta( $order->get_id(), Admin\Order::RENEWAL_META_KEY, $order_meta );
 	}
 
 	/**

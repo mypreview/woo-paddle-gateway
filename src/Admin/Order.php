@@ -26,6 +26,13 @@ class Order {
 	const META_KEY = '_woo_paddle_gateway';
 
 	/**
+	 * Renewal meta key.
+	 *
+	 * @since 1.0.0
+	 */
+	const RENEWAL_META_KEY = '_woo_paddle_gateway_renewal';
+
+	/**
 	 * Log key.
 	 *
 	 * @since 1.0.0
@@ -68,6 +75,14 @@ class Order {
 		);
 
 		add_meta_box(
+			"{$slug}-renewal-history",
+			__( 'Paddle Renewal History', 'woo-paddle-gateway' ),
+			array( $this, 'show_paddle_renewal_history' ),
+			null,
+			'normal'
+		);
+
+		add_meta_box(
 			"{$slug}-logs",
 			__( 'Paddle Log', 'woo-paddle-gateway' ),
 			array( $this, 'show_paddle_log' ),
@@ -102,6 +117,36 @@ class Order {
 			'admin/order/paddle-details.php',
 			array(
 				'meta' => get_post_meta( $post->ID, self::META_KEY, true ),
+			)
+		);
+	}
+
+	/**
+	 * Show paddle renewal history.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_Post $post Post object.
+	 *
+	 * @return void
+	 */
+	public function show_paddle_renewal_history( $post ) {
+
+		// Ensure the $post is a valid WP_Post object.
+		if ( ! $post instanceof WP_Post ) {
+			return;
+		}
+
+		// Check if the current user has the required capability to manage WooCommerce.
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+
+		// Display the Paddle details template.
+		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
+			'admin/order/paddle-renewal-history.php',
+			array(
+				'meta' => get_post_meta( $post->ID, self::RENEWAL_META_KEY, true ),
 			)
 		);
 	}
