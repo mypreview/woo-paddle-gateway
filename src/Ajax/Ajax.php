@@ -101,11 +101,6 @@ abstract class Ajax {
 	 */
 	protected function verify_nonce() {
 
-		// Skip verification if nonce is empty.
-		if ( ! $this->nonce ) {
-			return;
-		}
-
 		check_ajax_referer( $this->nonce );
 	}
 
