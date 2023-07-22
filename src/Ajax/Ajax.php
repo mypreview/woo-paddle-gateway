@@ -41,7 +41,7 @@ abstract class Ajax {
 	 *
 	 * @var string
 	 */
-	private $action_prefix;
+	private $action_prefix = 'woo_paddle_gateway_';
 
 	/**
 	 * The action scope.
@@ -50,7 +50,7 @@ abstract class Ajax {
 	 *
 	 * @var string
 	 */
-	private $action_scope;
+	private $action_scope = 'wp';
 
 	/**
 	 * Constructor.
@@ -119,8 +119,7 @@ abstract class Ajax {
 	abstract public function ajax_callback();
 
 	/**
-	 * Default action hook prefix.
-	 * Note that given prefix will be suffixed with `_`.
+	 * Set the action prefix.
 	 *
 	 * @since 1.0.0
 	 *
@@ -128,13 +127,13 @@ abstract class Ajax {
 	 *
 	 * @return void
 	 */
-	public function set_action_prefix( $prefix = 'woo_paddle_gateway' ) {
+	protected function set_action_prefix( $prefix ) {
 
-		$this->action_prefix = ! empty( $prefix ) ? rtrim( sanitize_key( $prefix ), '_' ) . '_' : '';
+		$this->action_prefix = sanitize_key( $prefix );
 	}
 
 	/**
-	 * Default action hook scope.
+	 * Set the action scope.
 	 *
 	 * @since 1.0.0
 	 *
@@ -142,7 +141,7 @@ abstract class Ajax {
 	 *
 	 * @return void
 	 */
-	public function set_action_scope( $scope = 'wp' ) {
+	protected function set_action_scope( $scope ) {
 
 		$this->action_scope = sanitize_key( $scope );
 	}
