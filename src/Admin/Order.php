@@ -12,7 +12,6 @@
 namespace Woo_Paddle_Gateway\Admin;
 
 use WP_Post;
-use WC_Order;
 
 /**
  * Class Order.
@@ -23,8 +22,6 @@ class Order {
 	 * Order meta key.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @var string
 	 */
 	const META_KEY = '_woo_paddle_gateway';
 
@@ -32,8 +29,6 @@ class Order {
 	 * Log key.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @var string
 	 */
 	const LOG_KEY = '_woo_paddle_gateway_log';
 
@@ -132,7 +127,7 @@ class Order {
 			return;
 		}
 
-		// Display the Paddle details template.
+		// Display the Paddle log template.
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'admin/order/paddle-log.php',
 			array(

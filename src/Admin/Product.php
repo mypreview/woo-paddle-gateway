@@ -20,8 +20,6 @@ class Product {
 	 * Post meta key.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @var string
 	 */
 	const META_KEY = '_woo_paddle_gateway';
 
@@ -75,6 +73,7 @@ class Product {
 
 		$data = get_post_meta( get_the_ID(), self::META_KEY, true );
 
+		// Start outputting the settings fields.
 		echo '<div class="options_group show_if_is_paddle_product">';
 
 		// Display the "Type" dropdown field.
@@ -130,6 +129,7 @@ class Product {
 			)
 		);
 
+		// End the settings fields.
 		echo '</div>';
 	}
 
