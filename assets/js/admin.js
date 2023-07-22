@@ -1,4 +1,4 @@
-/* global jQuery */
+/* global jQuery, confirm, ajaxurl */
 
 ( function ( wp, $ ) {
 	'use strict';
@@ -7,6 +7,7 @@
 		return;
 	}
 
+	const { __ } = wp.i18n;
 	const admin = {
 		/**
 		 * Cache.
@@ -20,10 +21,12 @@
 			this.vars = {};
 			this.vars.protect = 'woocommerce_woo-paddle-gateway_is_readonly';
 			this.vars.sandbox = 'woocommerce_woo-paddle-gateway_sandbox_mode';
+			this.vars.refresh = 'refresh-responses';
 			this.vars.verify = '[for*="_vendor_verify"]';
 			this.els.$protect = $( `#${ this.vars.protect }` );
 			this.els.$sandbox = $( `#${ this.vars.sandbox }` );
 			this.els.$verify = $( `.forminp ${ this.vars.verify }` );
+			this.els.$refresh = $( `#${ this.vars.refresh }` );
 		},
 
 		/**
@@ -51,6 +54,7 @@
 		bindEvents() {
 			this.els.$protect.on( 'click', this.handleOnToggleProtect );
 			this.els.$sandbox.on( 'click', this.handleOnToggleSandbox );
+			this.els.$refresh.on( 'click', this.handleOnRefreshResponses );
 		},
 
 		/**
@@ -82,6 +86,50 @@
 
 			admin.alterFields( '[name*="_test_"]', { style: `display: ${ isChecked ? visible : hidden }` }, 'tr' );
 			admin.alterFields( '[name*="_live_"]', { style: `display: ${ isChecked ? hidden : visible }` }, 'tr' );
+		},
+
+		/**
+		 * Handle refresh responses.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param {Object} event Event.
+		 *
+		 * @return {void}
+		 */
+		handleOnRefreshResponses( event ) {
+			event.preventDefault();
+
+			// If confirmed by the user, proceed.
+			// eslint-disable-next-line no-alert
+			if ( ! confirm( __( 'Are you sure you want to refresh the responses?', 'woo-paddle-gateway' ) ) ) {
+				return;
+			}
+
+			const $this = $( this );
+			const $wrapper = $this.parent();
+
+			$.ajax( {
+				url: ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'woo_paddle_gateway_refresh_responses',
+					_ajax_nonce: $( '#_wpnonce' ).val(),
+				},
+				beforeSend: () => {
+					$this.replaceWith( '<span class="spinner"></span>' );
+				},
+				success: ( { data: { message } } ) => {
+					$wrapper.html( `<span class="dashicons dashicons-yes"></span> ${ message }` );
+				},
+				error: ( {
+					responseJSON: {
+						data: { message },
+					},
+				} ) => {
+					$wrapper.html( `<span class="dashicons dashicons-no"></span> ${ message }` );
+				},
+			} );
 		},
 
 		/**
@@ -146,4 +194,4 @@
 	};
 
 	admin.init();
-} )( window.wp, jQuery );
+} )( window.wp, jQuery, ajaxurl );

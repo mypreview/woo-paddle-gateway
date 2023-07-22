@@ -34,3 +34,6 @@ if ( empty( $args['meta'] ) ) {
 	?>
 	</tbody>
 </table>
+
+<?php
+/* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */

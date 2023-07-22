@@ -48,3 +48,6 @@ if ( empty( $args['logs'] ) ) {
 	// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 	?>
 </div>
+
+<?php
+/* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */

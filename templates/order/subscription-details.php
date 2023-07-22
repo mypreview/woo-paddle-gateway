@@ -79,3 +79,6 @@ if ( empty( $args['meta'] ) || empty( $args['meta']['subscription_id'] ) ) {
 	</a>
 	<?php endif; ?>
 </p>
+
+<?php
+/* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */

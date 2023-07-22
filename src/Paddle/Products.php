@@ -40,7 +40,7 @@ class Products {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array
+	 * @return void
 	 */
 	public function fetch() {
 

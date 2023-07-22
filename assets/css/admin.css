@@ -33,3 +33,9 @@
 .woo-paddle-gateway-page [name*="_vendor_public_key"] {
 	cursor: not-allowed;
 }
+
+.woo-paddle-gateway-page .description .spinner {
+	float: left;
+	visibility: visible;
+	margin-left: 0;
+}

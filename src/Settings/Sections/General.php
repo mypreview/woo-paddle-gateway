@@ -141,6 +141,16 @@ class General extends Section {
 				),
 				'desc_tip'          => true,
 			),
+			'refresh_responses' => array(
+				'title'       => _x( 'Refresh Responses', 'settings field title', 'woo-paddle-gateway' ),
+				'description' => sprintf( /* translators: %1$s and %2$s opening and closing anchor tags respectively. */
+					_x( '%1$sFetch the latest responses from the Paddle API%2$s', 'settings field description', 'woo-paddle-gateway' ),
+					'<button class="button button-link" id="refresh-responses">',
+					'</button>'
+				),
+				'class'       => 'refresh-responses',
+				'type'        => 'info_enhanced',
+			),
 		);
 	}
 

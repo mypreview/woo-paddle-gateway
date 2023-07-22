@@ -160,6 +160,9 @@ class Plugin extends Container {
 			'Ajax\\Checkout'             => array(
 				'condition' => $is_ajax,
 			),
+			'Ajax\\RefreshResponses'     => array(
+				'condition' => $is_ajax,
+			),
 			'Compatibility\\WooCommerce' => array(
 				'condition' => $is_admin && class_exists( 'Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ),
 			),
@@ -173,6 +176,7 @@ class Plugin extends Container {
 				'condition' => $is_admin,
 			),
 			'Paddle\\Webhook'            => array(),
+			'Settings\\Fields'           => array(),
 			'Settings\\Register'         => array(),
 			'WooCommerce\\Account'       => array(
 				'condition' => $is_frontend,
