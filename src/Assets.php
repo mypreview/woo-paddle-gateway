@@ -86,8 +86,7 @@ abstract class Assets {
 	 */
 	public static function enqueue_frontend() {
 
-		$version      = woo_paddle_gateway()->get_version();
-		$gateway_keys = woo_paddle_gateway()->service( 'gateway' )->get_keys();
+		$version = woo_paddle_gateway()->get_version();
 
 		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
 		wp_register_script(
