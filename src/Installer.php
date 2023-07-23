@@ -11,6 +11,8 @@
 
 namespace Woo_Paddle_Gateway;
 
+use Woo_Paddle_Gateway\Enhancements;
+
 /**
  * The plugin installer class.
  */
@@ -23,7 +25,11 @@ class Installer {
 	 *
 	 * @return void
 	 */
-	public static function activate(): void {}
+	public static function activate() {
+
+		// Add the activation timestamp, if not already added.
+		woo_paddle_gateway()->service( 'options' )->add_usage_timestamp();
+	}
 
 	/**
 	 * Deactivate the plugin.
@@ -32,5 +38,5 @@ class Installer {
 	 *
 	 * @return void
 	 */
-	public static function deactivate(): void {}
+	public static function deactivate() {}
 }

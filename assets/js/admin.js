@@ -1,4 +1,4 @@
-/* global jQuery */
+/* global jQuery, confirm, ajaxurl */
 
 ( function ( wp, $ ) {
 	'use strict';
@@ -7,114 +7,159 @@
 		return;
 	}
 
-	/**
-	 * Woo Paddle Gateway.
-	 *
-	 * @since 1.0.0
-	 */
-	const wooPaddleGateway = {
+	const { __ } = wp.i18n;
+	const admin = {
 		/**
 		 * Cache.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
 		cache() {
-			this.vars = {};
 			this.els = {};
+			this.vars = {};
 			this.vars.protect = 'woocommerce_woo-paddle-gateway_is_readonly';
-			this.vars.testMode = 'woocommerce_woo-paddle-gateway_sandbox_mode';
+			this.vars.sandbox = 'woocommerce_woo-paddle-gateway_sandbox_mode';
+			this.vars.refresh = 'refresh-responses';
 			this.vars.verify = '[for*="_vendor_verify"]';
-			this.els.protect = $( `#${ this.vars.protect }` );
-			this.els.testMode = $( `#${ this.vars.testMode }` );
-			this.els.verify = $( `.forminp ${ this.vars.verify }` );
+			this.els.$protect = $( `#${ this.vars.protect }` );
+			this.els.$sandbox = $( `#${ this.vars.sandbox }` );
+			this.els.$verify = $( `.forminp ${ this.vars.verify }` );
+			this.els.$refresh = $( `#${ this.vars.refresh }` );
 		},
 
 		/**
 		 * Initialize.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
 		init() {
 			this.cache();
-			this.verifyLabel();
-			this.events();
-			this.handleToggleProtect();
-			this.handleToggleTestMode();
+			this.bindEvents();
+			this.showConnectionStatus();
+			this.handleOnToggleProtect();
+			this.handleOnToggleSandbox();
 		},
 
 		/**
-		 * Update verify labels.
+		 * Bind events.
 		 *
 		 * @since 1.0.0
-		 */
-		verifyLabel() {
-			// Bail if no verify labels found.
-			if ( ! this.els.verify.length ) {
-				return;
-			}
-
-			// Iterate over verify labels and update text.
-			this.els.verify.each( function () {
-				const $this = $( this );
-				const $input = $this.find( 'input' );
-				const isChecked = Number( $input.is( ':checked' ) );
-				const labels = $input.data( 'label' );
-				const replacement = labels[ isChecked.toString() ];
-
-				$this
-					.contents()
-					.filter( function () {
-						return this.nodeType === 3; // Filter text nodes.
-					} )
-					.each( function () {
-						this.nodeValue = this.nodeValue.replace( '…', replacement );
-					} );
-			} );
-		},
-
-		/**
-		 * Events.
 		 *
-		 * @since 1.0.0
+		 * @return {void}
 		 */
-		events() {
-			this.els.protect.on( 'click', this.handleToggleProtect );
-			this.els.testMode.on( 'click', this.handleToggleTestMode );
+		bindEvents() {
+			this.els.$protect.on( 'click', this.handleOnToggleProtect );
+			this.els.$sandbox.on( 'click', this.handleOnToggleSandbox );
+			this.els.$refresh.on( 'click', this.handleOnRefreshResponses );
 		},
 
 		/**
 		 * Handle toggle read-only mode.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
-		handleToggleProtect() {
+		handleOnToggleProtect() {
 			// Whether the checkbox is checked or not.
-			const isChecked = wooPaddleGateway.els.protect.is( ':checked' );
+			const isChecked = admin.els.$protect.is( ':checked' );
 
-			wooPaddleGateway.alterFields( 'vendor', { readonly: isChecked ? 'readonly' : null }, null );
+			admin.alterFields( '[name*="_vendor_"]:not(.disabled)', { readonly: isChecked ? 'readonly' : null } );
 		},
 
 		/**
 		 * Handle toggle test mode.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
-		handleToggleTestMode() {
+		handleOnToggleSandbox() {
 			// Whether the checkbox is checked or not.
-			const isChecked = wooPaddleGateway.els.testMode.is( ':checked' );
-			const visibleDisplay = 'table-row';
-			const hiddenDisplay = 'none';
+			const isChecked = admin.els.$sandbox.is( ':checked' );
+			const visible = 'table-row';
+			const hidden = 'none';
 
-			wooPaddleGateway.alterFields(
-				'test',
-				{ style: `display: ${ isChecked ? visibleDisplay : hiddenDisplay }` },
-				'tr'
-			);
-			wooPaddleGateway.alterFields(
-				'live',
-				{ style: `display: ${ isChecked ? hiddenDisplay : visibleDisplay }` },
-				'tr'
-			);
+			admin.alterFields( '[name*="_test_"]', { style: `display: ${ isChecked ? visible : hidden }` }, 'tr' );
+			admin.alterFields( '[name*="_live_"]', { style: `display: ${ isChecked ? hidden : visible }` }, 'tr' );
+		},
+
+		/**
+		 * Handle refresh responses.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param {Object} event Event.
+		 *
+		 * @return {void}
+		 */
+		handleOnRefreshResponses( event ) {
+			event.preventDefault();
+
+			// If confirmed by the user, proceed.
+			// eslint-disable-next-line no-alert
+			if ( ! confirm( __( 'Are you sure you want to refresh the responses?', 'woo-paddle-gateway' ) ) ) {
+				return;
+			}
+
+			const $this = $( this );
+			const $wrapper = $this.parent();
+
+			$.ajax( {
+				url: ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'woo_paddle_gateway_refresh_responses',
+					_ajax_nonce: $( '#_wpnonce' ).val(),
+				},
+				beforeSend: () => {
+					$this.replaceWith( '<span class="spinner"></span>' );
+				},
+				success: ( { data: { message } } ) => {
+					$wrapper.html( `<span class="dashicons dashicons-yes"></span> ${ message }` );
+				},
+				error: ( {
+					responseJSON: {
+						data: { message },
+					},
+				} ) => {
+					$wrapper.html( `<span class="dashicons dashicons-no"></span> ${ message }` );
+				},
+			} );
+		},
+
+		/**
+		 * Determine the status of the connection.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return {void}
+		 */
+		showConnectionStatus() {
+			// Bail if no verify labels found.
+			if ( ! this.els.$verify.length ) {
+				return;
+			}
+
+			// Iterate over verify labels and update text.
+			this.els.$verify.each( ( index, element ) => {
+				const $this = $( element );
+				const $input = $this.find( 'input' );
+				const isChecked = $input.is( ':checked' ) ? '1' : '0';
+				const labels = $input.data( 'label' );
+				const replacement = labels[ isChecked ];
+
+				$this
+					.contents()
+					.filter( ( index, el ) => el.nodeType === 3 )
+					.each( ( index, el ) => {
+						el.nodeValue = el.nodeValue.replace( '…', replacement );
+					} );
+			} );
 		},
 
 		/**
@@ -122,20 +167,22 @@
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param {string}      id     Field ID.
-		 * @param {Object}      attrs  Attributes.
-		 * @param {null|string} parent Parent selector.
+		 * @param {string}      selector Selector.
+		 * @param {Object}      attrs    Attributes.
+		 * @param {null|string} parent   Parent selector.
+		 *
+		 * @return {void}
 		 */
-		alterFields( id, attrs, parent ) {
-			const $fields = $( `[name*="_${ id }_"]` );
+		alterFields( selector, attrs, parent ) {
+			const $fields = $( selector );
 
 			// Bail if no fields found.
 			if ( ! $fields.length ) {
 				return;
 			}
 
-			$fields.each( function () {
-				let $selector = $( this );
+			$fields.each( ( index, element ) => {
+				let $selector = $( element );
 
 				if ( parent ) {
 					$selector = $selector.closest( parent );
@@ -146,5 +193,5 @@
 		},
 	};
 
-	wooPaddleGateway.init();
-} )( window.wp, jQuery );
+	admin.init();
+} )( window.wp, jQuery, ajaxurl );

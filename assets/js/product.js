@@ -7,48 +7,39 @@
 		return;
 	}
 
-	/**
-	 * MyPreview Woo Paddle.
-	 */
-	const wooPaddleGateway = {
+	const product = {
 		/**
 		 * Cache.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
 		cache() {
-			this.vars = {};
 			this.els = {};
+			this.vars = {};
 			this.vars.wrapper = 'show_if_is_paddle_product';
-			this.vars.isPaddleProduct = '_is_paddle_product';
+			this.vars.productCheckbox = '_is_paddle_product';
 			this.vars.productTypes = '_woo_paddle_gateway[type]';
 			this.vars.productTypeOptions = [];
-			this.els.wrapper = $( `.${ this.vars.wrapper }` );
-			this.els.isPaddleProduct = $( `#${ this.vars.isPaddleProduct }` );
-			this.els.productTypes = $( `[name="${ this.vars.productTypes }"]` );
+			this.els.$wrapper = $( `.${ this.vars.wrapper }` );
+			this.els.$productCheckbox = $( `#${ this.vars.productCheckbox }` );
+			this.els.$productTypes = $( `[name="${ this.vars.productTypes }"]` );
 		},
 
 		/**
 		 * Initialize.
 		 *
 		 * @since 1.0.0
+		 *
+		 * @return {void}
 		 */
 		init() {
 			this.cache();
-			this.events();
+			this.bindEvents();
 			this.typeOptions();
-			this.handleOnChangePaddleProduct();
-			this.handleOnChangePaddleProductType();
-		},
-
-		/**
-		 * Events.
-		 *
-		 * @since 1.0.0
-		 */
-		events() {
-			this.els.isPaddleProduct.on( 'change', this.handleOnChangePaddleProduct );
-			this.els.productTypes.on( 'change', this.handleOnChangePaddleProductType );
+			this.handleOnToggleProduct();
+			this.handleOnChangeProductType();
 		},
 
 		/**
@@ -57,7 +48,19 @@
 		 * @since 1.0.0
 		 */
 		typeOptions() {
-			this.vars.productTypeOptions = $.map( this.els.productTypes.find( 'option' ), ( { value } ) => value );
+			this.vars.productTypeOptions = $.map( this.els.$productTypes.find( 'option' ), ( { value } ) => value );
+		},
+
+		/**
+		 * Bind events.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return {void}
+		 */
+		bindEvents() {
+			this.els.$productCheckbox.on( 'change', this.handleOnToggleProduct );
+			this.els.$productTypes.on( 'change', this.handleOnChangeProductType );
 		},
 
 		/**
@@ -67,11 +70,11 @@
 		 *
 		 * @param {Object} event Event.
 		 */
-		handleOnChangePaddleProduct( event ) {
-			const $this = event ? $( event.target ) : wooPaddleGateway.els.isPaddleProduct;
+		handleOnToggleProduct( event ) {
+			const $this = event ? $( event.target ) : product.els.$productCheckbox;
 			const isChecked = $this.prop( 'checked' );
 
-			wooPaddleGateway.els.wrapper.toggle( isChecked );
+			product.els.$wrapper.toggle( isChecked );
 		},
 
 		/**
@@ -81,10 +84,10 @@
 		 *
 		 * @param {Object} event Event.
 		 */
-		handleOnChangePaddleProductType( event ) {
-			const $this = event ? $( event.target ) : wooPaddleGateway.els.productTypes;
+		handleOnChangeProductType( event ) {
+			const $this = event ? $( event.target ) : product.els.$productTypes;
 			const value = $this.val();
-			const otherOptions = wooPaddleGateway.vars.productTypeOptions.filter( ( option ) => option !== value );
+			const otherOptions = product.vars.productTypeOptions.filter( ( option ) => option !== value );
 
 			$( `.show_if_is_paddle_${ value }` ).show();
 
@@ -94,5 +97,5 @@
 		},
 	};
 
-	wooPaddleGateway.init();
+	product.init();
 } )( window.wp, jQuery );

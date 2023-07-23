@@ -1,6 +1,6 @@
 <?php
 /**
- * The implementation of the Pimple service provider interface
+ * The implementation of the Pimple service provider interface.
  *
  * @author MyPreview (Github: @mahdiyazdani, @gooklani, @mypreview)
  *
@@ -11,11 +11,11 @@
 
 namespace Woo_Paddle_Gateway;
 
-use Woo_Paddle_Gateway\Api\Api;
-use Woo_Paddle_Gateway\Gateway\Paddle;
-use Woo_Paddle_Gateway\Gateway\Manager;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Woo_Paddle_Gateway\Paddle;
+use Woo_Paddle_Gateway\Settings;
+use Woo_Paddle_Gateway\Util;
 
 /**
  * Class PluginServiceProvider.
@@ -28,15 +28,27 @@ class PluginServiceProvider implements ServiceProviderInterface {
 	 * This method should only be used to configure services and parameters.
 	 * It should not get services.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param Container $pimple Container instance.
 	 */
-	public function register( Container $pimple ): void {
+	public function register( $pimple ) {
 
-		// Gatewat services.
-		$pimple['paddle']         = fn() => new Paddle();
-		$pimple['paddle_manager'] = fn() => new Manager();
+		// Plugin core.
+		$pimple['template_manager'] = fn() => new TemplateManager();
 
-		// Api services.
-		$pimple['api'] = fn() => new Api();
+		// Plugin Paddle gateway.
+		$pimple['gateway']  = fn() => new Paddle\Gateway();
+		$pimple['plans']    = fn() => new Paddle\Plans();
+		$pimple['products'] = fn() => new Paddle\Products();
+
+		// Plugin settings.
+		$pimple['settings']         = fn() => new Settings\Settings();
+		$pimple['settings_general'] = fn() => new Settings\Sections\General();
+		$pimple['options']          = fn() => new Settings\Options();
+
+		// Plugin utilities.
+		$pimple['choices']   = fn() => new Util\Choices();
+		$pimple['endpoints'] = fn() => new Util\Endpoints();
 	}
 }

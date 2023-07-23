@@ -29,17 +29,18 @@
  * Version:              1.0.0
  * Author:               MyPreview
  * Author URI:           https://mypreview.one
- * Requires at least:    6.0
+ * Requires at least:    5.9
  * Requires PHP:         7.4
  * License:              GPL-3.0
  * License URI:          http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:          woo-paddle-gateway
+ * Text Domain:          woo-additional-terms
  * Domain Path:          /languages
- * WC requires at least: 7.0
- * WC tested up to:      7.7
+ * WC requires at least: 5.5
+ * WC tested up to:      7.8
  */
 
 use Woo_Paddle_Gateway\Plugin;
+use WC_Install_Notice\Nag;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	header( 'Status: 403 Forbidden' );
@@ -88,8 +89,17 @@ function woo_paddle_gateway_load(): void {
 	woo_paddle_gateway();
 }
 
-add_action( 'woocommerce_loaded', 'woo_paddle_gateway_load', 20 );
+if ( ! (
+		( new Nag() )
+		->set_file_path( __FILE__ )
+		->set_plugin_name( 'Woo Paddle Gateway' )
+		->does_it_requires_nag()
+	)
+) {
 
-// Register activation and deactivation hooks.
-register_activation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'activate' ) );
-register_deactivation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'deactivate' ) );
+	add_action( 'woocommerce_loaded', 'woo_paddle_gateway_load', 20 );
+
+	// Register activation and deactivation hooks.
+	register_activation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'activate' ) );
+	register_deactivation_hook( __FILE__, array( 'Woo_Paddle_Gateway\\Installer', 'deactivate' ) );
+}

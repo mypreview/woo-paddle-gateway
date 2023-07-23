@@ -6,7 +6,7 @@
  *
  * @since 1.0.0
  *
- * @package woo-paddle-gateway/gateway
+ * @package woo-paddle-gateway
  */
 
 namespace Woo_Paddle_Gateway\WooCommerce;
@@ -23,7 +23,7 @@ class Cart {
 	 *
 	 * @return void
 	 */
-	public function setup(): void {
+	public function setup() {
 
 		add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'only_one_in_cart' ) );
 	}
@@ -37,7 +37,7 @@ class Cart {
 	 *
 	 * @return bool
 	 */
-	public function only_one_in_cart( bool $passed ): bool {
+	public function only_one_in_cart( $passed ) {
 
 		// Make sure to empty the cart before adding a new product.
 		wc_empty_cart();

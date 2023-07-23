@@ -1,32 +1,31 @@
 <?php
 /**
- * Payment gateway manager.
+ * Utility class to get the gateway and its credentials.
  *
  * @author MyPreview (Github: @mahdiyazdani, @gooklani, @mypreview)
  *
  * @since 1.0.0
  *
- * @package woo-paddle-gateway/gateway
+ * @package woo-paddle-gateway
  */
 
-namespace Woo_Paddle_Gateway\Gateway;
+namespace Woo_Paddle_Gateway\Paddle;
 
 use WC;
-use WC_Payment_Gateway;
 
 /**
- * Payment gateway manager.
+ * Class Gateway.
  */
-class Manager {
+class Gateway {
 
 	/**
-	 * Get the payment gateway object.
+	 * Get the products.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return null|WC_Payment_Gateway
+	 * @return array
 	 */
-	public function get_gateway(): ?WC_Payment_Gateway {
+	public function get() {
 
 		// Bail early in case Payment Gateways are not available.
 		if ( ! WC()->payment_gateways() ) {
@@ -35,14 +34,15 @@ class Manager {
 
 		// Get the available payment gateways.
 		$available_gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$gateway_id         = woo_paddle_gateway()->get_slug();
 
 		// Bail early in case the Paddle gateway is not available.
-		if ( ! isset( $available_gateways[ Paddle::ID ] ) ) {
+		if ( ! isset( $available_gateways[ $gateway_id ] ) ) {
 			return null;
 		}
 
 		// Return the Paddle gateway object.
-		return $available_gateways[ Paddle::ID ];
+		return $available_gateways[ $gateway_id ];
 	}
 
 	/**
@@ -52,10 +52,10 @@ class Manager {
 	 *
 	 * @return array
 	 */
-	public function get_gateway_keys(): array {
+	public function get_keys() {
 
 		// Get the payment gateway object.
-		$gateway = $this->get_gateway();
+		$gateway = $this->get();
 
 		// Bail early in case the Paddle gateway is not available.
 		if ( ! $gateway ) {
@@ -75,8 +75,8 @@ class Manager {
 		$current_mode = $is_sandbox ? 'test' : 'live';
 
 		// Return the keys.
-		return array(
-			'test_mode'        => $is_sandbox,
+		return (object) array(
+			'is_sandbox'       => $is_sandbox,
 			'current_mode'     => $current_mode,
 			'vendor_id'        => $gateway->get_option( "{$current_mode}_vendor_id" ),
 			'vendor_auth_code' => $gateway->get_option( "{$current_mode}_vendor_auth_code" ),

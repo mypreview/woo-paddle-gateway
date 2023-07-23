@@ -1,18 +1,18 @@
 <?php
 /**
- * Payment gateway registerer.
+ * Plugin settings registerer.
  *
  * @author MyPreview (Github: @mahdiyazdani, @gooklani, @mypreview)
  *
  * @since 1.0.0
  *
- * @package woo-paddle-gateway/gateway
+ * @package woo-paddle-gateway
  */
 
-namespace Woo_Paddle_Gateway\Gateway;
+namespace Woo_Paddle_Gateway\Settings;
 
 /**
- * Register payment gateways.
+ * Register plugin settings fields.
  */
 class Register {
 
@@ -23,9 +23,9 @@ class Register {
 	 *
 	 * @return void
 	 */
-	public function setup(): void {
+	public function setup() {
 
-		add_filter( 'woocommerce_payment_gateways', array( $this, 'gateways' ) );
+		add_filter( 'woocommerce_payment_gateways', array( $this, 'settings' ) );
 	}
 
 	/**
@@ -38,9 +38,10 @@ class Register {
 	 *
 	 * @return array
 	 */
-	public function gateways( array $settings ): array {
+	public function settings( $settings ) {
 
-		$settings[] = woo_paddle_gateway()->service( 'paddle' );
+		// Add our settings page.
+		$settings[] = woo_paddle_gateway()->service( 'settings' );
 		return $settings;
 	}
 }

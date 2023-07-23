@@ -22,8 +22,8 @@ build/Release
 
 # Dependency directories
 node_modules/
-/vendor/
-/build/
+vendor/
+build/
 
 # Unit tests
 /tmp
