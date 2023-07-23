@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying Paddle subscription details.
+ * The Template for displaying the subscription history for Paddle subscriptions in the order details page.
  *
  * @since 1.0.0
  *
@@ -16,7 +16,6 @@ if ( empty( $args['meta'] ) ) {
 }
 
 ?>
-
 <h2 class="woocommerce-order-details__title">
 	<?php esc_html_e( 'Subscription history', 'woo-paddle-gateway' ); ?>
 </h2>

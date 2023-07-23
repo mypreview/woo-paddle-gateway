@@ -16,7 +16,6 @@ if ( empty( $args['meta'] ) || empty( $args['meta']['subscription_id'] ) ) {
 }
 
 ?>
-
 <h2 class="woocommerce-order-details__title">
 	<?php esc_html_e( 'Subscription details', 'woo-paddle-gateway' ); ?>
 </h2>

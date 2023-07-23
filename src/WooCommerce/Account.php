@@ -27,7 +27,7 @@ class Account {
 	 * Setup hooks and filters.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return void
 	 */
 	public function setup() {
@@ -47,7 +47,7 @@ class Account {
 	 * @since 1.0.0
 	 *
 	 * @param array $items The menu items.
-	 * 
+	 *
 	 * @return array Modified menu items.
 	 */
 	public function account_menu_items( $items ) {
@@ -68,12 +68,13 @@ class Account {
 	 * @since 1.0.0
 	 *
 	 * @param array $args The query arguments.
-	 * 
+	 *
 	 * @return array Modified query arguments.
 	 */
 	public function my_orders_query( $args ) {
 
 		// Include orders that have a Paddle subscription by setting the custom meta query.
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 		$args['meta_key']     = Admin\Order::META_KEY;
 		$args['meta_compare'] = 'EXISTS';
 
@@ -89,7 +90,7 @@ class Account {
 	 * @since 1.0.0
 	 *
 	 * @param WC_Order $order The order object.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function subscription_renewal_history( $order ) {
@@ -117,7 +118,7 @@ class Account {
 	 * @since 1.0.0
 	 *
 	 * @param WC_Order $order The order object.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function subscription_details( $order ) {

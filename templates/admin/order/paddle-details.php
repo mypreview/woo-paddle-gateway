@@ -17,7 +17,6 @@ if ( empty( $args['meta'] ) ) {
 }
 
 ?>
-
 <table class="widefat fixed striped woo-paddle-gateway-paddle-details">
 	<tbody>
 	<?php

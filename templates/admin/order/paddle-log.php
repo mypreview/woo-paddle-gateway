@@ -17,7 +17,6 @@ if ( empty( $args['logs'] ) ) {
 }
 
 ?>
-
 <div class="woo-paddle-gateway-paddle-log">
 	<?php
 	// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound

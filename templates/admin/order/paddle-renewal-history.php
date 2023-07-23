@@ -17,7 +17,6 @@ if ( empty( $args['meta'] ) ) {
 }
 
 ?>
-
 <div class="woo-paddle-gateway-paddle-renewal-history">
 	<?php
     // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -55,7 +54,7 @@ if ( empty( $args['meta'] ) ) {
 					<?php if ( ! empty( $renewal['receipt_url'] ) ) : ?>
 						<tr class="woo-paddle-gateway-paddle-renewal-history-receipt-url">
 							<th scope="row"><?php esc_html_e( 'Receipt URL', 'woo-paddle-gateway' ); ?></th>
-							<td><?php echo make_clickable( esc_url( $renewal['receipt_url'] ) ); ?></td>
+							<td><?php echo wp_kses( make_clickable( $renewal['receipt_url'] ), array( 'a' => array( 'href' => array() ) ) ); ?></td>
 						</tr>
 					<?php endif; ?>
 				</tbody>
