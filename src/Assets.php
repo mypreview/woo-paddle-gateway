@@ -11,6 +11,7 @@
 
 namespace Woo_Paddle_Gateway;
 
+use WC_AJAX;
 use Woo_Paddle_Gateway\Enhancements\Notices;
 
 /**
@@ -106,14 +107,9 @@ abstract class Assets {
 		);
 		wp_localize_script(
 			'woo-paddle-gateway',
-			'woo_paddle_gateway_admin_params',
+			'woo_paddle_gateway_params',
 			array(
-				'checkout_uri' => add_query_arg(
-					array(
-						'wc-ajax' => is_wc_endpoint_url( 'order-pay' ) ? 'payment' : 'checkout',
-					),
-					home_url( '/' )
-				),
+				'checkout_uri' => WC_AJAX::get_endpoint( 'checkout' ),
 			)
 		);
 	}

@@ -30,6 +30,7 @@ class Checkout {
 	public function setup() {
 
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'enqueue_checkout_assets' ) );
+		add_action( 'woocommerce_pay_order_before_submit', array( $this, 'enqueue_checkout_assets' ) );
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'apply_coupon_via_url' ) );
 		add_filter( 'woocommerce_coupon_message', array( $this, 'update_coupon_message' ), 10, 3 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'unset_checkout_fields' ) );

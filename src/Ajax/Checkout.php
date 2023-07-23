@@ -59,6 +59,8 @@ class Checkout extends Ajax {
 	 */
 	public function ajax_callback() {
 
+		$this->verify_nonce();
+
 		// Process the checkout.
 		WC()->checkout()->process_checkout();
 

@@ -50,7 +50,7 @@ if ( empty( $args['meta'] ) || empty( $args['meta']['subscription_id'] ) ) {
 		<?php if ( ! empty( $args['meta']['next_payment_amount'] ) ) : ?>
 		<tr class="woo-paddle-gateway-paddle-details-next-payment-amount">
 			<th scope="row"><?php esc_html_e( 'Next payment amount:', 'woo-paddle-gateway' ); ?></th>
-			<td><?php echo wc_price( $args['meta']['next_payment_amount'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+			<td><?php echo wc_clean( wc_price( $args['meta']['next_payment_amount'] ) ); ?></td>
 		</tr>
 		<?php endif; ?>
 		<?php if ( ! empty( $args['meta']['receipt_url'] ) ) : ?>

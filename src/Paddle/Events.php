@@ -134,7 +134,7 @@ trait Events {
 
 		if ( isset( $webhook_data['initial_payment'] ) && ! wc_string_to_bool( $webhook_data['initial_payment'] ) ) {
 			// Create a renewal order.
-			$this->create_renewal_order( $order, 'wc-completed' );
+			$this->create_renewal_order( $order, $webhook_data );
 		}
 	}
 
@@ -184,7 +184,7 @@ trait Events {
 		$this->save_payload_log( $order_id, $webhook_data );
 
 		// Create a renewal order.
-		$this->create_renewal_order( $order, 'wc-failed' );
+		$this->create_renewal_order( $order, $webhook_data );
 	}
 
 	/**
@@ -225,12 +225,12 @@ trait Events {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WC_Order $order  The original order instance.
-	 * @param string   $status The order status.
+	 * @param WC_Order $order        The original order instance.
+	 * @param array    $webhook_data The webhook data.
 	 *
 	 * @return void
 	 */
-	private function create_renewal_order( $order, $status ) {
+	private function create_renewal_order( $order, $webhook_data ) {
 
 		// Step 1: Create a new order instance and copy customer info to it.
 		$renewal = wc_create_order();
@@ -257,7 +257,7 @@ trait Events {
 		$renewal->set_payment_method_title( $order->get_payment_method_title() );
 
 		// Step 3: Set the order status for the renewal order.
-		$renewal->update_status( $status );
+		$renewal->update_status( $order->get_status() );
 
 		// Step 4: Add order notes for the renewal order and the original order.
 		// Note: The order ID is cleaned to prevent any potential security issues.
@@ -282,19 +282,40 @@ trait Events {
 		);
 
 		// Step 7: Store the info in the meta-data.
-		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_META_KEY, true );
+		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, true );
 		$order_meta = array_filter( $order_meta );
 
 		// Add the renewal order ID and other data to the order meta data.
-		$order_meta[] = array(
-			'order_id' => $renewal->get_id(),
-			'total'    => $renewal->get_total(),
-			'date'     => $renewal->get_date_created(),
-			'status'   => $renewal->get_status(),
+		$renewal_meta = array(
+			'order_id'    => $renewal->get_id(),
+			'total'       => $renewal->get_total(),
+			'date'        => $renewal->get_date_created(),
+			'status'      => $renewal->get_status(),
 		);
 
+		$keys_to_update = array(
+			'next_bill_date',
+			'subscription_id',
+			'subscription_payment_id',
+			'next_payment_amount',
+			'receipt_url',
+		);
+
+		// Loop through the keys to be updated and clean the data if available.
+		foreach ( $keys_to_update as $key ) {
+			// Skip if the key is not set.
+			if ( empty( $webhook_data[ $key ] ) ) {
+				continue;
+			}
+
+			$renewal_meta[ $key ] = wc_clean( $webhook_data[ $key ] );
+		}
+
+		// Add the webhook data to the order meta data.
+		array_push( $order_meta, $renewal_meta );
+
 		// Step 8: Save the updated renewal meta data.
-		update_post_meta( $order->get_id(), Admin\Order::RENEWAL_META_KEY, $order_meta );
+		update_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, $order_meta );
 	}
 
 	/**
@@ -331,6 +352,11 @@ trait Events {
 		foreach ( $keys_to_update as $key ) {
 			// Skip if the key is not set.
 			if ( empty( $webhook_data[ $key ] ) ) {
+				continue;
+			}
+
+			// Avoid overriding the cancel and update URLs.
+			if ( in_array( $key, array( 'cancel_url', 'update_url' ), true ) && ! empty( $order_meta[ $key ] ) ) {
 				continue;
 			}
 

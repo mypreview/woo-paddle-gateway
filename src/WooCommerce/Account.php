@@ -26,9 +26,28 @@ class Account {
 	 *
 	 * @return void
 	 */
-	public function setup(): void {
+	public function setup() {
 
+		add_filter( 'woocommerce_my_account_my_orders_query', array( $this, 'my_orders_query' ) );
 		add_filter( 'woocommerce_order_details_after_order_table', array( $this, 'subscription_details' ) );
+	}
+
+	/**
+	 * Modify the my orders query.
+	 * Only show orders that have a Paddle subscription.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $args The query arguments.
+	 *
+	 * @return array
+	 */
+	public function my_orders_query( $args ) {
+
+		$args['meta_key']     = Admin\Order::META_KEY;
+		$args['meta_compare'] = 'EXISTS';
+
+		return $args;
 	}
 
 	/**

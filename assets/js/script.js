@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-/* global jQuery, woo_paddle_gateway_admin_params */
+/* global jQuery, woo_paddle_gateway_params */
 
 ( function ( $, l10n ) {
 	'use strict';
@@ -18,6 +18,7 @@
 			this.vars.wc = '.woocommerce';
 			this.vars.messages = '.woocommerce-error, .woocommerce-message';
 			this.els.$form = $( 'form.woocommerce-checkout' );
+			this.els.$orderReview = $( 'form#order_review' );
 			this.els.$gateway = $( '#payment_method_woo-paddle-gateway' );
 		},
 
@@ -42,6 +43,7 @@
 		 */
 		bindEvents() {
 			this.els.$form.on( 'submit', this.handleOnSubmit );
+			this.els.$orderReview.on( 'submit', this.handleOnSubmit );
 		},
 
 		/**
@@ -73,7 +75,7 @@
 				async: true,
 				dataType: 'json',
 				url: l10n.checkout_uri,
-				data: script.els.$form.serialize(),
+				data: $form.serialize(),
 				beforeSend() {
 					$form.block( {
 						message: null,
@@ -161,4 +163,4 @@
 	};
 
 	script.init();
-} )( jQuery, woo_paddle_gateway_admin_params );
+} )( jQuery, woo_paddle_gateway_params );

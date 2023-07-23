@@ -30,7 +30,7 @@ class Order {
 	 *
 	 * @since 1.0.0
 	 */
-	const RENEWAL_META_KEY = '_woo_paddle_gateway_renewal';
+	const RENEWAL_KEY = '_woo_paddle_gateway_renewal';
 
 	/**
 	 * Log key.
@@ -146,7 +146,7 @@ class Order {
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'admin/order/paddle-renewal-history.php',
 			array(
-				'meta' => get_post_meta( $post->ID, self::RENEWAL_META_KEY, true ),
+				'meta' => get_post_meta( $post->ID, self::RENEWAL_KEY, true ),
 			)
 		);
 	}
