@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 defined( 'WC_VERSION' ) || exit;
 
-// If the order logs is empty, return.
+// If the renewal log is empty, bail.
 if ( empty( $args['meta'] ) ) {
 	esc_html_e( 'No Paddle subscription renewal found.', 'woo-paddle-gateway' );
 	return;
