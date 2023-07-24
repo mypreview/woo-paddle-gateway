@@ -19,7 +19,7 @@ class Notices {
 	/**
 	 * The dismiss nonce name.
 	 *
-	 * @since 1.4.0
+	 * @since 1.0.0
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Notices {
 	public function print() {
 
 		/**
-		 * Fires after the welcome admin notice.
+		 * Outputs any plugin related admin notices.
 		 *
 		 * @since 1.0.0
 		 */

@@ -33,7 +33,7 @@
  * Requires PHP:         7.4
  * License:              GPL-3.0
  * License URI:          http://www.gnu.org/licenses/gpl-3.0.txt
- * Text Domain:          woo-additional-terms
+ * Text Domain:          woo-paddle-gateway
  * Domain Path:          /languages
  * WC requires at least: 5.5
  * WC tested up to:      7.8
@@ -83,7 +83,7 @@ function woo_paddle_gateway() {
  *
  * @return void
  */
-function woo_paddle_gateway_load(): void {
+function woo_paddle_gateway_load() {
 
 	// Fetch the instance.
 	woo_paddle_gateway();

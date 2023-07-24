@@ -116,14 +116,11 @@ trait Events {
 			return;
 		}
 
-		// Set the order status to "Completed".
-		$order->update_status( 'completed' );
-
 		// Add a note to the order for the next bill date.
 		if ( ! empty( $webhook_data['next_bill_date'] ) ) {
 			$order->add_order_note(
 				sprintf( /* translators: %s: Checkout ID. */
-					__( 'New subscription renewal payment received. Next bill date: %s.', 'woo-paddle-gateway' ),
+					__( 'New subscription payment received. Next bill date: %s.', 'woo-paddle-gateway' ),
 					wc_clean( $webhook_data['next_bill_date'] )
 				)
 			);

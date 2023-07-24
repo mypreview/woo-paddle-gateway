@@ -11,8 +11,6 @@
 
 namespace Woo_Paddle_Gateway;
 
-use Woo_Paddle_Gateway\Enhancements;
-
 /**
  * The plugin installer class.
  */
