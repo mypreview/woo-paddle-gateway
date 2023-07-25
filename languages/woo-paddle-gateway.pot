@@ -1,0 +1,418 @@
+# Copyright (C) 2023 MyPreview
+# This file is distributed under the GPL-3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Woo Paddle Gateway 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-paddle-gateway\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-07-25T08:57:22+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: woo-paddle-gateway\n"
+
+#. Plugin Name of the plugin
+msgid "Woo Paddle Gateway"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://mypreview.one"
+msgstr ""
+
+#. Description of the plugin
+msgid "Accept Visa, MasterCard, American Express, Discover, JCB, Diners Club, iDEAL, Alipay, and more directly on your store with the Paddle payment gateway for WooCommerce, including PayPal, Apple Pay, Google Pay, and Microsoft Pay for mobile and desktop."
+msgstr ""
+
+#. Author of the plugin
+msgid "MyPreview"
+msgstr ""
+
+#: src/Admin/Order.php:71
+msgid "Paddle Details"
+msgstr ""
+
+#: src/Admin/Order.php:79
+msgid "Paddle Renewal History"
+msgstr ""
+
+#: src/Admin/Order.php:87
+msgid "Paddle Log"
+msgstr ""
+
+#: src/Admin/Product.php:54
+msgid "Paddle"
+msgstr ""
+
+#: src/Admin/Product.php:55
+msgid "Enable this option if this is a Paddle catalog product or subscription plan."
+msgstr ""
+
+#: src/Admin/Product.php:82
+msgid "Product type"
+msgstr ""
+
+#: src/Admin/Product.php:83
+msgid "Use the dropdown list to select the Paddle product type."
+msgstr ""
+
+#: src/Admin/Product.php:90
+msgid "Catalog"
+msgstr ""
+
+#: src/Admin/Product.php:91
+msgid "Subscription"
+msgstr ""
+
+#: src/Admin/Product.php:99
+msgid "Catalog product"
+msgstr ""
+
+#: src/Admin/Product.php:100
+msgid "Enter the \"ID\" of the Paddle catalog product."
+msgstr ""
+
+#: src/Admin/Product.php:109
+msgid "Select a product"
+msgstr ""
+
+#: src/Admin/Product.php:117
+msgid "Subscription plan"
+msgstr ""
+
+#: src/Admin/Product.php:118
+msgid "Enter the \"ID\" of the Paddle subscription plan."
+msgstr ""
+
+#: src/Admin/Product.php:127
+msgid "Select a plan"
+msgstr ""
+
+#: src/Ajax/RefreshResponses.php:66
+msgid "Paddle credentials are not set or invalid."
+msgstr ""
+
+#: src/Ajax/RefreshResponses.php:78
+msgid "Products and plans have been fetched successfully."
+msgstr ""
+
+#. translators: 1: Open anchor tag, 2: Close anchor tag.
+#: src/Enhancements/Meta.php:61
+msgctxt "plugin settings page"
+msgid "%1$sSettings%2$s"
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/Paddle/Events.php:123
+msgid "New subscription payment received. Next bill date: %s."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/Paddle/Events.php:164
+msgid "Subscription payment failed. Next bill date: %s."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/Paddle/Events.php:174
+msgid "Subscription payment failed. Attempt number: %s."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/Paddle/Events.php:271
+msgid "Renewal order created for the subscription order #%1$s %2$s."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/Paddle/Events.php:283
+msgid "A renewal order #%1$s with %2$s status has been created."
+msgstr ""
+
+#: src/Paddle/Webhook.php:96
+msgid "Paddle public key is not set."
+msgstr ""
+
+#: src/Paddle/Webhook.php:117
+msgid "Paddle webhook signature is not set."
+msgstr ""
+
+#: src/Paddle/Webhook.php:139
+msgid "Paddle webhook signature verification failed."
+msgstr ""
+
+#: src/Paddle/Webhook.php:150
+msgid "Alert name is not set."
+msgstr ""
+
+#: src/Paddle/Webhook.php:164
+msgid "Alert name is not valid."
+msgstr ""
+
+#: src/Settings/Sections/General.php:32
+msgctxt "settings field title"
+msgid "Status"
+msgstr ""
+
+#: src/Settings/Sections/General.php:33
+msgctxt "settings field label"
+msgid "Enable the gateway."
+msgstr ""
+
+#: src/Settings/Sections/General.php:38
+msgctxt "settings field title"
+msgid "Title"
+msgstr ""
+
+#: src/Settings/Sections/General.php:39
+msgctxt "settings field description"
+msgid "This controls the title which the user sees during checkout."
+msgstr ""
+
+#: src/Settings/Sections/General.php:40
+msgctxt "settings field default"
+msgid "Paddle"
+msgstr ""
+
+#: src/Settings/Sections/General.php:45
+msgctxt "settings field title"
+msgid "Description"
+msgstr ""
+
+#: src/Settings/Sections/General.php:46
+msgctxt "settings field description"
+msgid "This controls the description which the user sees during checkout."
+msgstr ""
+
+#: src/Settings/Sections/General.php:47
+msgctxt "settings field default"
+msgid "Pay securely using your credit card, debit card, iDEAL, Google Pay, Apple Pay, AliPay, and PayPal."
+msgstr ""
+
+#: src/Settings/Sections/General.php:53
+msgctxt "settings field title"
+msgid "Protect Fields"
+msgstr ""
+
+#: src/Settings/Sections/General.php:54
+msgctxt "settings field description"
+msgid "Disable the ability to edit any gateway credential fields."
+msgstr ""
+
+#: src/Settings/Sections/General.php:59
+msgctxt "settings field title"
+msgid "Sandbox Mode (Test)"
+msgstr ""
+
+#: src/Settings/Sections/General.php:60
+msgctxt "settings field description"
+msgid "Warning! Check this option to prevent Paddle from processing live transactions."
+msgstr ""
+
+#: src/Settings/Sections/General.php:61
+msgctxt "settings field description"
+msgid "Place the payment gateway in test mode using test account credentials."
+msgstr ""
+
+#: src/Settings/Sections/General.php:67
+#: src/Settings/Sections/General.php:106
+msgctxt "settings field title"
+msgid "Connection"
+msgstr ""
+
+#: src/Settings/Sections/General.php:77
+#: src/Settings/Sections/General.php:116
+msgctxt "settings field title"
+msgid "Vendor ID"
+msgstr ""
+
+#: src/Settings/Sections/General.php:78
+#: src/Settings/Sections/General.php:117
+msgctxt "settings field description"
+msgid "Enter your Paddle vendor ID."
+msgstr ""
+
+#: src/Settings/Sections/General.php:84
+#: src/Settings/Sections/General.php:123
+msgctxt "settings field title"
+msgid "Auth Code"
+msgstr ""
+
+#: src/Settings/Sections/General.php:85
+#: src/Settings/Sections/General.php:124
+msgctxt "settings field description"
+msgid "Enter your Paddle Auth Code. This token will be used to interact with the API."
+msgstr ""
+
+#: src/Settings/Sections/General.php:92
+#: src/Settings/Sections/General.php:131
+msgctxt "settings field title"
+msgid "Public Key"
+msgstr ""
+
+#: src/Settings/Sections/General.php:93
+#: src/Settings/Sections/General.php:132
+msgctxt "settings field description"
+msgid "This key will be used to encrypt the payment data."
+msgstr ""
+
+#: src/Settings/Sections/General.php:94
+#: src/Settings/Sections/General.php:133
+msgctxt "settings field placeholder"
+msgid "The public key will be automatically generated. Do not change this value."
+msgstr ""
+
+#: src/Settings/Sections/General.php:145
+msgctxt "settings field title"
+msgid "Refresh Responses"
+msgstr ""
+
+#. translators: %1$s and %2$s opening and closing anchor tags respectively.
+#: src/Settings/Sections/General.php:147
+msgctxt "settings field description"
+msgid "%1$sFetch the latest responses from the Paddle API%2$s"
+msgstr ""
+
+#: src/Settings/Sections/General.php:168
+msgid "The API connection has been successfully established."
+msgstr ""
+
+#: src/Settings/Sections/General.php:169
+msgid "Please check your network connection and verify the API credentials."
+msgstr ""
+
+#: src/Settings/Settings.php:78
+msgctxt "settings tab label"
+msgid "Paddle"
+msgstr ""
+
+#: src/Settings/Settings.php:79
+msgctxt "settings tab description"
+msgid "Paddle payment gateway for WooCommerce"
+msgstr ""
+
+#: src/Settings/Settings.php:206
+msgid "We encountered an issue while processing your request. It appears that the necessary API keys for the payment gateway are missing. Please ensure that you have provided the correct API keys required for the integration."
+msgstr ""
+
+#: src/Settings/Settings.php:268
+msgid "An error occurred while retrieving the checkout URL. Please verify if the gateway has been properly integrated."
+msgstr ""
+
+#: src/Settings/Settings.php:291
+msgid "Our system encountered an error while attempting to generate the payment link. Unfortunately, we are unable to proceed with the payment process at the moment."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/WooCommerce/Checkout.php:176
+msgid "WooCommerce order created. (Key: %s)."
+msgstr ""
+
+#. translators: %s: Checkout ID.
+#: src/WooCommerce/Checkout.php:188
+msgid "Paddle charge complete. (Checkout ID: %s)."
+msgstr ""
+
+#: templates/admin/order/paddle-details.php:15
+msgid "No Paddle payment details found."
+msgstr ""
+
+#: templates/admin/order/paddle-log.php:15
+msgid "No Paddle log found for this order."
+msgstr ""
+
+#. translators: %s: Event name.
+#: templates/admin/order/paddle-log.php:29
+msgid "Payload response: \"%s\""
+msgstr ""
+
+#: templates/admin/order/paddle-renewal-history.php:15
+msgid "No Paddle subscription renewal found."
+msgstr ""
+
+#. translators: %s: Event name.
+#: templates/admin/order/paddle-renewal-history.php:29
+msgid "Subscription renewal: \"%s\""
+msgstr ""
+
+#: templates/admin/order/paddle-renewal-history.php:38
+msgid "Order ID"
+msgstr ""
+
+#: templates/admin/order/paddle-renewal-history.php:44
+#: templates/order/subscription-renewal-history.php:27
+#: templates/order/subscription-renewal-history.php:43
+msgid "Total"
+msgstr ""
+
+#: templates/admin/order/paddle-renewal-history.php:50
+#: templates/order/subscription-renewal-history.php:28
+#: templates/order/subscription-renewal-history.php:48
+msgid "Status"
+msgstr ""
+
+#: templates/admin/order/paddle-renewal-history.php:56
+#: templates/order/subscription-renewal-history.php:29
+#: templates/order/subscription-renewal-history.php:53
+msgid "Receipt URL"
+msgstr ""
+
+#: templates/order/subscription-details.php:20
+msgid "Subscription details"
+msgstr ""
+
+#: templates/order/subscription-details.php:27
+msgid "Status:"
+msgstr ""
+
+#: templates/order/subscription-details.php:33
+msgid "Next billing date:"
+msgstr ""
+
+#: templates/order/subscription-details.php:39
+msgid "Subscription ID:"
+msgstr ""
+
+#: templates/order/subscription-details.php:45
+msgid "Cancellation effective date:"
+msgstr ""
+
+#: templates/order/subscription-details.php:51
+msgid "Next payment amount:"
+msgstr ""
+
+#: templates/order/subscription-details.php:57
+msgid "Receipt URL:"
+msgstr ""
+
+#: templates/order/subscription-details.php:60
+#: templates/order/subscription-renewal-history.php:56
+msgid "View receipt"
+msgstr ""
+
+#: templates/order/subscription-details.php:71
+msgid "Edit Billing Info"
+msgstr ""
+
+#: templates/order/subscription-details.php:76
+msgid "Are you sure you want to cancel your subscription?"
+msgstr ""
+
+#: templates/order/subscription-details.php:77
+msgid "Cancel subscription"
+msgstr ""
+
+#: templates/order/subscription-renewal-history.php:20
+msgid "Subscription history"
+msgstr ""
+
+#: templates/order/subscription-renewal-history.php:26
+#: templates/order/subscription-renewal-history.php:38
+msgid "Date"
+msgstr ""
+
+#: assets/js/admin.js:105
+#: assets/js/minified/admin.js:1
+msgid "Are you sure you want to refresh the responses?"
+msgstr ""

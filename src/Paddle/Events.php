@@ -30,11 +30,11 @@ trait Events {
 	 */
 	private function subscription_created( $webhook_data ) {
 
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
+		// Retrieve the order object.
+		$order = $this->get_order( $webhook_data );
 
 		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
+		if ( ! $order ) {
 			return;
 		}
 
@@ -42,7 +42,7 @@ trait Events {
 		$order->update_status( 'completed' );
 
 		// Set the order meta data.
-		$this->save_payload_log( $order_id, $webhook_data );
+		$this->save_payload_log( $order->get_id(), $webhook_data );
 	}
 
 	/**
@@ -56,11 +56,11 @@ trait Events {
 	 */
 	private function subscription_cancelled( $webhook_data ) {
 
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
+		// Retrieve the order object.
+		$order = $this->get_order( $webhook_data );
 
 		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
+		if ( ! $order ) {
 			return;
 		}
 
@@ -68,7 +68,7 @@ trait Events {
 		$order->update_status( 'cancelled' );
 
 		// Set the order meta data.
-		$this->save_payload_log( $order_id, $webhook_data );
+		$this->save_payload_log( $order->get_id(), $webhook_data );
 	}
 
 	/**
@@ -82,11 +82,11 @@ trait Events {
 	 */
 	private function subscription_payment_refunded( $webhook_data ) {
 
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
+		// Retrieve the order object.
+		$order = $this->get_order( $webhook_data );
 
 		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
+		if ( ! $order ) {
 			return;
 		}
 
@@ -94,7 +94,7 @@ trait Events {
 		$order->update_status( 'refunded' );
 
 		// Set the order meta data.
-		$this->save_payload_log( $order_id, $webhook_data );
+		$this->save_payload_log( $order->get_id(), $webhook_data );
 	}
 
 	/**
@@ -108,11 +108,11 @@ trait Events {
 	 */
 	private function subscription_payment_succeeded( $webhook_data ) {
 
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
+		// Retrieve the order object.
+		$order = $this->get_order( $webhook_data );
 
 		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
+		if ( ! $order ) {
 			return;
 		}
 
@@ -127,7 +127,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->save_payload_log( $order_id, $webhook_data );
+		$this->save_payload_log( $order->get_id(), $webhook_data );
 
 		if ( isset( $webhook_data['initial_payment'] ) && ! wc_string_to_bool( $webhook_data['initial_payment'] ) ) {
 			// Create a renewal order.
@@ -146,11 +146,11 @@ trait Events {
 	 */
 	private function subscription_payment_failed( $webhook_data ) {
 
-		$order_id = $webhook_data['passthrough'] ?? '';
-		$order    = wc_get_order( $order_id );
+		// Retrieve the order object.
+		$order = $this->get_order( $webhook_data );
 
 		// Bail early, if the order does not exist.
-		if ( ! $order || ! $order instanceof WC_Order ) {
+		if ( ! $order ) {
 			return;
 		}
 
@@ -178,7 +178,7 @@ trait Events {
 		}
 
 		// Set the order meta data.
-		$this->save_payload_log( $order_id, $webhook_data );
+		$this->save_payload_log( $order->get_id(), $webhook_data );
 
 		// Create a renewal order.
 		$this->create_renewal_order( $order, $webhook_data );
@@ -228,6 +228,14 @@ trait Events {
 	 * @return void
 	 */
 	private function create_renewal_order( $order, $webhook_data ) {
+
+		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, true );
+		$order_meta = array_filter( $order_meta );
+
+		// Bail early, if the renewal order already exists.
+		if ( empty( $webhook_data['subscription_payment_id'] ) || isset( $order_meta[ $webhook_data['subscription_payment_id'] ] ) ) {
+			return;
+		}
 
 		// Step 1: Create a new order instance and copy customer info to it.
 		$renewal = wc_create_order();
@@ -279,9 +287,6 @@ trait Events {
 		);
 
 		// Step 7: Store the info in the meta-data.
-		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, true );
-		$order_meta = array_filter( $order_meta );
-
 		// Add the renewal order ID and other data to the order meta data.
 		$renewal_meta = array(
 			'order_id'    => $renewal->get_id(),
@@ -309,7 +314,7 @@ trait Events {
 		}
 
 		// Add the webhook data to the order meta data.
-		array_push( $order_meta, $renewal_meta );
+		$order_meta[ $webhook_data['subscription_payment_id'] ] = $renewal_meta;
 
 		// Step 8: Save the updated renewal meta data.
 		update_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, $order_meta );
@@ -362,5 +367,30 @@ trait Events {
 
 		// Save updated order meta data.
 		update_post_meta( $order_id, Admin\Order::META_KEY, $order_meta );
+	}
+
+	/**
+	 * Verify the order-id passed through the webhook.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $webhook_data The webhook data.
+	 *
+	 * @return bool|WC_Order
+	 */
+	private function get_order( $webhook_data ) {
+
+		if ( empty( $webhook_data['passthrough'] ) ) {
+			return false;
+		}
+
+		$order = wc_get_order( $webhook_data['passthrough'] );
+
+		// Bail early, if the order does not exist.
+		if ( ! $order || ! $order instanceof WC_Order ) {
+			return false;
+		}
+
+		return $order;
 	}
 }

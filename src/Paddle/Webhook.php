@@ -171,8 +171,16 @@ class Webhook {
 		// Call the appropriate method based on the alert name.
 		call_user_func( array( $this, $alert_name ), $webhook_data );
 
-		// Return true to indicate successful dispatch and validation.
-		return true;
+		// Return a success response.
+		$response = rest_ensure_response(
+			array(
+				'success' => true,
+			)
+		);
+
+		$response->set_status( 200 );
+
+		return $response;
 	}
 
 }
