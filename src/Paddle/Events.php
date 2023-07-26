@@ -203,18 +203,29 @@ trait Events {
 			return;
 		}
 
+		// Save the subscription meta data.
+		$this->save_subscription_meta( $order_id, $webhook_data );
+
 		// Retrieve existing order meta data.
 		$paddle_log = (array) get_post_meta( $order_id, Admin\Order::LOG_KEY, true );
 		$paddle_log = array_filter( $paddle_log );
+
+		// Avoid duplicate entries.
+		// Bail early, if the webhook data already exists.
+		if ( ! empty( $paddle_log ) && ! empty( $webhook_data['subscription_payment_id'] ) ) {
+			$subscription_payment_ids = array_column( $paddle_log, 'subscription_payment_id' );
+
+			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
+			if ( in_array( $webhook_data['subscription_payment_id'], $subscription_payment_ids ) ) {
+				return;
+			}
+		}
 
 		// Add the webhook data to the order meta data.
 		array_push( $paddle_log, $webhook_data );
 
 		// Save updated order meta data.
 		update_post_meta( $order_id, Admin\Order::LOG_KEY, $paddle_log );
-
-		// Save the subscription meta data.
-		$this->save_subscription_meta( $order_id, $webhook_data );
 	}
 
 	/**
