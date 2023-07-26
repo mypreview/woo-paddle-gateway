@@ -25,7 +25,7 @@ class Fields {
 	 */
 	public function setup() {
 
-		add_action( 'woocommerce_generate_info_enhanced_html', array( $this, 'info_enhanced_field' ), 10, 3 );
+		add_action( 'woocommerce_generate_woo_paddle_gateway_info_enhanced_html', array( $this, 'info_enhanced_field' ), 10, 3 );
 	}
 
 	/**

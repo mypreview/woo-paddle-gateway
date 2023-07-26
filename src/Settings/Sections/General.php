@@ -149,7 +149,7 @@ class General extends Section {
 					'</button>'
 				),
 				'class'       => 'refresh-responses',
-				'type'        => 'info_enhanced',
+				'type'        => 'woo_paddle_gateway_info_enhanced',
 			),
 		);
 	}
