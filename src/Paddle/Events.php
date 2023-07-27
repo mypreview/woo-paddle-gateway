@@ -116,6 +116,9 @@ trait Events {
 			return;
 		}
 
+		// Set the order status to "Completed".
+		$order->update_status( 'completed' );
+
 		// Add a note to the order for the next bill date.
 		if ( ! empty( $webhook_data['next_bill_date'] ) ) {
 			$order->add_order_note(
@@ -226,6 +229,16 @@ trait Events {
 
 		// Save updated order meta data.
 		update_post_meta( $order_id, Admin\Order::LOG_KEY, $paddle_log );
+
+		/**
+		 * Fires when a Paddle webhook is received.
+		 * 
+		 * @since 1.0.0
+		 * 
+		 * @param int   $order_id     The order ID.
+		 * @param array $webhook_data The webhook data.
+		 */
+		do_action( 'woo_paddle_gateway_webhook_received', $order_id, $webhook_data );
 	}
 
 	/**
