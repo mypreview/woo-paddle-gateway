@@ -48,12 +48,11 @@ class Account {
 	 *
 	 * @param array $items The menu items.
 	 *
-	 * @return array Modified menu items.
+	 * @return array
 	 */
 	public function account_menu_items( $items ) {
 
-		// Remove the "Downloads" and "Edit Address" tabs from the menu.
-		unset( $items['downloads'] );
+		// Remove the "Edit Address" tab from the menu.
 		unset( $items['edit-address'] );
 
 		return $items;
