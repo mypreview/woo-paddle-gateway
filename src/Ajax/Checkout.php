@@ -1,6 +1,6 @@
 <?php
 /**
- * Dismiss onboarding (welcome) admin notice.
+ * Process the checkout via AJAX.
  *
  * @author MyPreview (Github: @mahdiyazdani, @gooklani, @mypreview)
  *
@@ -14,7 +14,7 @@ namespace Woo_Paddle_Gateway\Ajax;
 use WC;
 
 /**
- * Onboarding admin notice class.
+ * Checkout class.
  */
 class Checkout extends Ajax {
 
