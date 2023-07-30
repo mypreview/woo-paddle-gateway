@@ -13,6 +13,7 @@ namespace Woo_Paddle_Gateway\Paddle;
 
 use WP_Error;
 use WP_REST_Server;
+use WP_REST_Response;
 
 /**
  * Class Webhook.
@@ -80,9 +81,7 @@ class Webhook {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void|WP_Error|true Returns void if the dispatch is successful,
-	 *                           WP_Error if any verification fails,
-	 *                           true if the dispatch is successful and valid.
+	 * @return WP_REST_Response|WP_Error
 	 */
 	public function dispatch_webhook_payload() {
 
@@ -182,5 +181,4 @@ class Webhook {
 
 		return $response;
 	}
-
 }
