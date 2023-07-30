@@ -215,11 +215,11 @@ trait Events {
 
 		// Avoid duplicate entries.
 		// Bail early, if the webhook data already exists.
-		if ( ! empty( $paddle_log ) && ! empty( $webhook_data['subscription_payment_id'] ) ) {
-			$subscription_payment_ids = array_column( $paddle_log, 'subscription_payment_id' );
+		if ( ! empty( $paddle_log ) && ! empty( $webhook_data['alert_id'] ) ) {
+			$alert_ids = array_column( $paddle_log, 'alert_id' );
 
 			// phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict
-			if ( in_array( $webhook_data['subscription_payment_id'], $subscription_payment_ids ) ) {
+			if ( in_array( $webhook_data['alert_id'], $alert_ids ) ) {
 				return;
 			}
 		}
@@ -232,9 +232,9 @@ trait Events {
 
 		/**
 		 * Fires when a Paddle webhook is received.
-		 * 
+		 *
 		 * @since 1.0.0
-		 * 
+		 *
 		 * @param int   $order_id     The order ID.
 		 * @param array $webhook_data The webhook data.
 		 */
