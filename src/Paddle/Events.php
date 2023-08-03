@@ -28,7 +28,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function subscription_created( $webhook_data ) {
+	private function event_subscription_created( $webhook_data ) {
 
 		// Retrieve the order object.
 		$order = $this->get_order( $webhook_data );
@@ -54,7 +54,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function subscription_cancelled( $webhook_data ) {
+	private function event_subscription_cancelled( $webhook_data ) {
 
 		// Retrieve the order object.
 		$order = $this->get_order( $webhook_data );
@@ -80,7 +80,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function subscription_payment_refunded( $webhook_data ) {
+	private function event_subscription_payment_refunded( $webhook_data ) {
 
 		// Retrieve the order object.
 		$order = $this->get_order( $webhook_data );
@@ -106,7 +106,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function subscription_payment_succeeded( $webhook_data ) {
+	private function event_subscription_payment_succeeded( $webhook_data ) {
 
 		// Retrieve the order object.
 		$order = $this->get_order( $webhook_data );
@@ -147,7 +147,7 @@ trait Events {
 	 *
 	 * @return void
 	 */
-	private function subscription_payment_failed( $webhook_data ) {
+	private function event_subscription_payment_failed( $webhook_data ) {
 
 		// Retrieve the order object.
 		$order = $this->get_order( $webhook_data );
