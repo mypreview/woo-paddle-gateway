@@ -32,6 +32,7 @@ class Checkout {
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'enqueue_checkout_assets' ) );
 		add_action( 'woocommerce_pay_order_before_submit', array( $this, 'enqueue_checkout_assets' ) );
 		add_action( 'woocommerce_before_checkout_form', array( $this, 'apply_coupon_via_url' ) );
+		add_filter( 'woocommerce_order_button_text', array( $this, 'update_place_order_button_text' ) );
 		add_filter( 'woocommerce_coupon_message', array( $this, 'update_coupon_message' ), 10, 3 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'unset_checkout_fields' ) );
 		add_action( 'woocommerce_thankyou_woo-paddle-gateway', array( $this, 'save_checkout_hash' ) );
@@ -92,6 +93,18 @@ class Checkout {
 		}
 
 		WC()->cart->add_discount( wc_clean( $coupon_code ) );
+	}
+
+	/**
+	 * Update the place order button text.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function update_place_order_button_text() {
+
+		return __( 'Complete Checkout', 'woo-paddle-gateway' );
 	}
 
 	/**
