@@ -36,6 +36,7 @@ class Checkout {
 		add_filter( 'woocommerce_coupon_message', array( $this, 'update_coupon_message' ), 10, 3 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'unset_checkout_fields' ) );
 		add_action( 'woocommerce_thankyou_woo-paddle-gateway', array( $this, 'save_checkout_hash' ) );
+		add_filter( 'woocommerce_thankyou_order_received_text', array( $this, 'update_thankyou_text' ), 10, 2 );
 		add_filter( 'woocommerce_enable_order_notes_field', '__return_false' );
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 		remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
@@ -209,4 +210,26 @@ class Checkout {
 		exit;
 	}
 
+	/**
+	 * Update the thank you text.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string   $text  Thank you text.
+	 * @param WC_Order $order Order object.
+	 *
+	 * @return string
+	 */
+	public function update_thankyou_text( $text, $order ) {
+
+		// Check if the order object is valid.
+		if ( ! $order instanceof WC_Order ) {
+			return $text;
+		}
+
+		$wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '';
+
+		return esc_html__( 'Order Received! Access your downloads and license in your account page.', 'woo-paddle-gateway' ) .
+			' <a class="button wc-forward' . esc_attr( $wp_button_class ) . '" href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">' . esc_html__( 'My Account', 'woo-paddle-gateway' ) . '</a>';
+	}
 }
