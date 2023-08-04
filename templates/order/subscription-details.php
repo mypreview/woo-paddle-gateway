@@ -65,6 +65,7 @@ if ( empty( $args['meta'] ) || empty( $args['meta']['subscription_id'] ) ) {
 	</tbody>
 </table>
 
+<?php if ( is_account_page() ) : ?>
 <p class="order-again woo-paddle-gateway-paddle-details-actions">
 	<?php if ( ! empty( $args['meta']['update_url'] ) && empty( $args['meta']['cancellation_effective_date'] ) ) : ?>
 	<a href="<?php echo esc_url( $args['meta']['update_url'] ); ?>" rel="noopener noreferrer" class="woocommerce-button button" target="_blank">
@@ -78,6 +79,7 @@ if ( empty( $args['meta'] ) || empty( $args['meta']['subscription_id'] ) ) {
 	</a>
 	<?php endif; ?>
 </p>
+<?php endif; ?>
 
 <?php
 /* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */
