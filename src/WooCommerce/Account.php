@@ -33,6 +33,7 @@ class Account {
 	public function setup() {
 
 		add_filter( 'woocommerce_account_menu_items', array( $this, 'account_menu_items' ) );
+		add_filter( 'woocommerce_my_account_my_orders_actions', array( $this, 'my_orders_actions' ), 10, 2 );
 		add_filter( 'woocommerce_my_account_my_orders_query', array( $this, 'my_orders_query' ) );
 		add_filter( 'woocommerce_order_details_after_order_table', array( $this, 'subscription_renewal_history' ) );
 		add_filter( 'woocommerce_order_details_after_order_table', array( $this, 'subscription_details' ) );
@@ -42,7 +43,7 @@ class Account {
 	 * Manage the account menu items.
 	 *
 	 * This method is used to customize the account menu items displayed in the My Account section.
-	 * It removes the "Downloads" and "Edit Address" tabs from the menu items.
+	 * It removes the "Edit Address" tab from the menu items.
 	 *
 	 * @since 1.0.0
 	 *
@@ -56,6 +57,40 @@ class Account {
 		unset( $items['edit-address'] );
 
 		return $items;
+	}
+
+	/**
+	 * Manage the my orders actions.
+	 *
+	 * This method is used to customize the actions displayed in the my orders page.
+	 * It removes the "Pay" and "Cancel" actions from the my orders page.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array    $actions The actions.
+	 * @param WC_Order $order The order object.
+	 *
+	 * @return array
+	 */
+	public function my_orders_actions( $actions, $order ) {
+
+		// Bail out if the order is not an instance of WC_Order.
+		if ( ! $order instanceof WC_Order ) {
+			return $actions;
+		}
+
+		// Bail out if the order is not a Paddle subscription.
+		if ( ! $order->get_meta( Admin\Order::META_KEY ) ) {
+			return $actions;
+		}
+
+		// Remove the "Pay" action from the my orders page.
+		unset( $actions['pay'] );
+
+		// Remove the "Pay" action from the my orders page.
+		unset( $actions['cancel'] );
+
+		return $actions;
 	}
 
 	/**
