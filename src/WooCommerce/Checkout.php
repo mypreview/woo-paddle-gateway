@@ -230,6 +230,6 @@ class Checkout {
 		$wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '';
 
 		return esc_html__( 'Order Received! Access your downloads and license in your account page.', 'woo-paddle-gateway' ) .
-			' <a class="button wc-forward' . esc_attr( $wp_button_class ) . '" href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '">' . esc_html__( 'My Account', 'woo-paddle-gateway' ) . '</a>';
+			' <a class="button wc-forward' . esc_attr( $wp_button_class ) . '" href="' . esc_url( wc_get_account_endpoint_url( 'downloads' ) ) . '">' . esc_html__( 'My Account', 'woo-paddle-gateway' ) . '</a>';
 	}
 }
