@@ -12,7 +12,7 @@
 namespace Woo_Paddle_Gateway\Paddle;
 
 use WC_Order;
-use Woo_Paddle_Gateway\Admin;
+use Woo_Paddle_Gateway\Admin\MetaBoxes;
 
 /**
  * Class Events.
@@ -210,7 +210,7 @@ trait Events {
 		$this->save_subscription_meta( $order_id, $webhook_data );
 
 		// Retrieve existing order meta data.
-		$paddle_log = (array) get_post_meta( $order_id, Admin\Order::LOG_KEY, true );
+		$paddle_log = (array) get_post_meta( $order_id, MetaBoxes\Logs::META_KEY, true );
 		$paddle_log = array_filter( $paddle_log );
 
 		// Avoid duplicate entries.
@@ -228,7 +228,7 @@ trait Events {
 		array_push( $paddle_log, $webhook_data );
 
 		// Save updated order meta data.
-		update_post_meta( $order_id, Admin\Order::LOG_KEY, $paddle_log );
+		update_post_meta( $order_id, MetaBoxes\Logs::META_KEY, $paddle_log );
 
 		/**
 		 * Fires when a Paddle webhook is received.
@@ -253,7 +253,7 @@ trait Events {
 	 */
 	private function create_renewal_order( $order, $webhook_data ) {
 
-		$order_meta = (array) get_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, true );
+		$order_meta = (array) get_post_meta( $order->get_id(), MetaBoxes\RenewalHistory::META_KEY, true );
 		$order_meta = array_filter( $order_meta );
 
 		// Bail early, if the renewal order already exists.
@@ -281,7 +281,7 @@ trait Events {
 		$items = $order->get_items();
 		$item  = $items[ array_keys( $items )[0] ];
 		$renewal->add_product( $item->get_product(), $item->get_quantity() );
-		$renewal->set_total( $order->get_total() );
+		$renewal->set_total( $order->get_subtotal() );
 		$renewal->set_payment_method( $order->get_payment_method() );
 		$renewal->set_payment_method_title( $order->get_payment_method_title() );
 
@@ -341,7 +341,7 @@ trait Events {
 		$order_meta[ $webhook_data['subscription_payment_id'] ] = $renewal_meta;
 
 		// Step 8: Save the updated renewal meta data.
-		update_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, $order_meta );
+		update_post_meta( $order->get_id(), MetaBoxes\RenewalHistory::META_KEY, $order_meta );
 	}
 
 	/**
@@ -371,7 +371,7 @@ trait Events {
 		);
 
 		// Retrieve existing order meta data.
-		$order_meta = (array) get_post_meta( $order_id, Admin\Order::META_KEY, true );
+		$order_meta = (array) get_post_meta( $order_id, MetaBoxes\Details::META_KEY, true );
 		$order_meta = array_filter( $order_meta );
 
 		// Loop through the keys to be updated and clean the data if available.
@@ -390,7 +390,7 @@ trait Events {
 		}
 
 		// Save updated order meta data.
-		update_post_meta( $order_id, Admin\Order::META_KEY, $order_meta );
+		update_post_meta( $order_id, MetaBoxes\Details::META_KEY, $order_meta );
 	}
 
 	/**

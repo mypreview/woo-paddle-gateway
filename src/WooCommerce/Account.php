@@ -16,7 +16,7 @@
 namespace Woo_Paddle_Gateway\WooCommerce;
 
 use WC_Order;
-use Woo_Paddle_Gateway\Admin;
+use Woo_Paddle_Gateway\Admin\MetaBoxes;
 
 /**
  * Class Account.
@@ -80,7 +80,7 @@ class Account {
 		}
 
 		// Bail out if the order is not a Paddle subscription.
-		if ( ! $order->get_meta( Admin\Order::META_KEY ) ) {
+		if ( ! $order->get_meta( MetaBoxes\Details::META_KEY ) ) {
 			return $actions;
 		}
 
@@ -109,7 +109,7 @@ class Account {
 
 		// Include orders that have a Paddle subscription by setting the custom meta query.
 		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-		$args['meta_key']     = Admin\Order::META_KEY;
+		$args['meta_key']     = MetaBoxes\Details::META_KEY;
 		$args['meta_compare'] = 'EXISTS';
 
 		return $args;
@@ -138,7 +138,7 @@ class Account {
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'order/subscription-renewal-history.php',
 			array(
-				'meta' => get_post_meta( $order->get_id(), Admin\Order::RENEWAL_KEY, true ),
+				'meta' => get_post_meta( $order->get_id(), MetaBoxes\RenewalHistory::META_KEY, true ),
 			)
 		);
 	}
@@ -166,7 +166,7 @@ class Account {
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'order/subscription-details.php',
 			array(
-				'meta' => get_post_meta( $order->get_id(), Admin\Order::META_KEY, true ),
+				'meta' => get_post_meta( $order->get_id(), MetaBoxes\Details::META_KEY, true ),
 			)
 		);
 	}
