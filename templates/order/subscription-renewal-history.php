@@ -52,9 +52,7 @@ if ( empty( $args['meta'] ) ) {
 				</td>
 				<td class="woocommerce-table__subscription-renewal-receipt-url" data-title="<?php esc_attr_e( 'Receipt URL', 'woo-paddle-gateway' ); ?>">
 					<?php if ( ! empty( $renewal['receipt_url'] ) ) : ?>
-					<a href="<?php echo esc_url( $renewal['receipt_url'] ); ?>" class="woocommerce-button button view" rel="noopener noreferrer" target="_blank">
-						<?php esc_html_e( 'View receipt', 'woo-paddle-gateway' ); ?>
-					</a>
+					<a href="<?php echo esc_url( $renewal['receipt_url'] ); ?>" class="woocommerce-button button view" rel="noopener noreferrer" target="_blank"><?php esc_html_e( 'View receipt', 'woo-paddle-gateway' ); ?></a>
 					<?php endif; ?>
 				</td>
 			</tr>

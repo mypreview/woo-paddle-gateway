@@ -59,9 +59,7 @@ $wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_
 		<tr class="woo-paddle-gateway-paddle-details-receipt-url">
 			<th scope="row"><?php esc_html_e( 'Receipt URL:', 'woo-paddle-gateway' ); ?></th>
 			<td>
-				<a href="<?php echo esc_url( $args['meta']['receipt_url'] ); ?>" class="woocommerce-button button view" rel="noopener noreferrer" target="_blank">
-					<?php esc_html_e( 'View receipt', 'woo-paddle-gateway' ); ?>
-				</a>
+				<a href="<?php echo esc_url( $args['meta']['receipt_url'] ); ?>" class="woocommerce-button button view" rel="noopener noreferrer" target="_blank"><?php esc_html_e( 'View receipt', 'woo-paddle-gateway' ); ?></a>
 			</td>
 		</tr>
 		<?php endif; ?>
