@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 defined( 'WC_VERSION' ) || exit;
 
 // If the order logs is empty, return.
-if ( empty( $args['logs'] ) ) {
+if ( empty( $args['meta'] ) ) {
 	esc_html_e( 'No Paddle log found for this order.', 'woo-paddle-gateway' );
 	return;
 }
@@ -20,7 +20,7 @@ if ( empty( $args['logs'] ) ) {
 <div class="woo-paddle-gateway-paddle-log">
 	<?php
 	// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-	foreach ( $args['logs'] as $event ) :
+	foreach ( $args['meta'] as $event ) :
 		?>
 		<details>
 			<summary>
