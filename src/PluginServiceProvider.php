@@ -11,16 +11,10 @@
 
 namespace Woo_Paddle_Gateway;
 
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
-use Woo_Paddle_Gateway\Paddle;
-use Woo_Paddle_Gateway\Settings;
-use Woo_Paddle_Gateway\Util;
-
 /**
  * Class PluginServiceProvider.
  */
-class PluginServiceProvider implements ServiceProviderInterface {
+class PluginServiceProvider implements Dependencies\Pimple\ServiceProviderInterface {
 
 	/**
 	 * Registers services on the given container.
@@ -30,7 +24,7 @@ class PluginServiceProvider implements ServiceProviderInterface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Container $pimple Container instance.
+	 * @param Dependencies\Pimple\Container $pimple Container instance.
 	 */
 	public function register( $pimple ) {
 
