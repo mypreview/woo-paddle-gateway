@@ -14,7 +14,7 @@ namespace Woo_Paddle_Gateway;
 /**
  * The plugin class.
  */
-class Plugin extends Dependencies\Pimple\Container {
+class Plugin extends Vendor\Pimple\Container {
 
 	/**
 	 * The plugin version.
