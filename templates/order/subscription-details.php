@@ -69,13 +69,13 @@ $wp_button_class = wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_
 <?php if ( is_account_page() ) : ?>
 <p class="order-again woo-paddle-gateway-paddle-details-actions">
 	<?php if ( ! empty( $args['meta']['update_url'] ) && empty( $args['meta']['cancellation_effective_date'] ) ) : ?>
-	<a href="<?php echo esc_url( $args['meta']['update_url'] ); ?>" rel="noopener noreferrer" class="woocommerce-button button <?php echo sanitize_html_class( $wp_button_class ); ?>" target="_blank">
+	<a href="<?php echo esc_url( $args['meta']['update_url'] ); ?>" data-theme="none" data-override="<?php echo esc_url( $args['meta']['update_url'] ); ?>" rel="noopener noreferrer" class="paddle_button woocommerce-button button <?php echo sanitize_html_class( $wp_button_class ); ?>">
 		<?php esc_html_e( 'Edit Billing Info', 'woo-paddle-gateway' ); ?>
 	</a>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $args['meta']['cancel_url'] ) && empty( $args['meta']['cancellation_effective_date'] ) ) : ?>
-	<a href="<?php echo esc_url( $args['meta']['cancel_url'] ); ?>" rel="noopener noreferrer" class="woocommerce-button button <?php echo sanitize_html_class( $wp_button_class ); ?>" onclick="return confirm('<?php esc_attr_e( 'Are you sure you want to cancel your subscription?', 'woo-paddle-gateway' ); ?>');">
+	<a href="<?php echo esc_url( $args['meta']['cancel_url'] ); ?>" data-theme="none" data-override="<?php echo esc_url( $args['meta']['cancel_url'] ); ?>" rel="noopener noreferrer" class="paddle_button woocommerce-button button <?php echo sanitize_html_class( $wp_button_class ); ?>">
 		<?php esc_html_e( 'Cancel subscription', 'woo-paddle-gateway' ); ?>
 	</a>
 	<?php endif; ?>
