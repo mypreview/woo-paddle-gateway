@@ -83,4 +83,38 @@ class Gateway {
 			'public_key'       => $gateway->get_option( "{$current_mode}_vendor_public_key" ),
 		);
 	}
+
+	/**
+	 * Setup the Paddle JS.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function setup_paddle_js() {
+
+		// Get the current API credentials.
+		$saved_keys = $this->get_keys();
+
+		// Leave early in case the vendor ID is not set.
+		if ( empty( $saved_keys->vendor_id ) ) {
+			return;
+		}
+
+		// Enqueue the Paddle JS script.
+		wp_enqueue_script( 'paddle' );
+
+		// Setup the Paddle JS.
+		wc_enqueue_js(
+			sprintf(
+				'Paddle.Setup({vendor:%d});',
+				wc_clean( $saved_keys->vendor_id )
+			)
+		);
+
+		// Set the sandbox mode.
+		if ( $saved_keys->is_sandbox ) {
+			wc_enqueue_js( "Paddle.Environment.set('sandbox');" );
+		}
+	}
 }

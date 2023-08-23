@@ -162,6 +162,9 @@ class Account {
 			return;
 		}
 
+		// Setup the Paddle JS.
+		woo_paddle_gateway()->service( 'gateway' )->setup_paddle_js();
+
 		// Display the Paddle details template for subscription details.
 		woo_paddle_gateway()->service( 'template_manager' )->echo_template(
 			'order/subscription-details.php',
