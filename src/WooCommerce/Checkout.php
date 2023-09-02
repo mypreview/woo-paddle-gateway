@@ -93,7 +93,7 @@ class Checkout {
 			return;
 		}
 
-		WC()->cart->add_discount( wc_clean( $coupon_code ) );
+		WC()->cart->add_discount( wc_sanitize_coupon_code( $coupon_code ) );
 	}
 
 	/**
